@@ -20,7 +20,7 @@ window.SITE = {
 
     // Liste der angemeldeten Spieler (siehe Anleitung in der Antwort):
     // Link der veröffentlichten Google-Tabelle als CSV. Leer lassen = Liste bleibt leer.
-    PLAYERS_CSV_URL: '',
+    PLAYERS_CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTloZ1UY_x99yngoXBY5nlLaPxrOoyygJYx1_n7C_OTZPMLSamwrLB9VPUwM-ue3swBUF6ROMAgcGjg/pub?gid=908896186&single=true&output=csv',
     // In welcher Spalte (ab 0 gezählt) steht der Minecraft-Name?
     NAME_COLUMN: 0,
 
