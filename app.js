@@ -286,14 +286,8 @@
     const frame = $('signup-frame');
 
     function openSignup() {
-        if (typeof dialog.showModal !== 'function') {
-            window.open(TALLY_URL, '_blank', 'noopener');
-            return;
-        }
-        if (!frame.src) frame.src = TALLY_EMBED;   // erst beim ersten Öffnen laden
-        dialog.showModal();
+       window.location.href = TALLY_URL;
     }
-
     document.querySelectorAll('[data-open-signup]').forEach(b => b.addEventListener('click', openSignup));
     dialog.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => dialog.close()));
     dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });  // Klick auf den Hintergrund
