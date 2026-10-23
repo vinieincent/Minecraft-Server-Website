@@ -21,7 +21,7 @@
         return e;
     }
 
-    const skin = name => `https://mc-heads.net/avatar/${encodeURIComponent(name)}/72`;
+    const skin = name => `https://mc-api.io/render/${encodeURIComponent(name)}?size=256`;
     const profile = name => `https://namemc.com/profile/${encodeURIComponent(name)}`;
 
     /* ---------- Texte aus config.js einsetzen ---------- */
