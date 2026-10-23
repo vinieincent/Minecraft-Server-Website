@@ -271,6 +271,14 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
 
 .player .live { margin-left: auto; flex: none; width: 10px; height: 10px; background: var(--online); border-radius: 50%; box-shadow: 0 0 8px var(--online); }
 
+.group + .group { margin-top: 24px; }
+.group h3 { margin-bottom: 10px; }
+.group-empty { margin: 0 0 10px; color: var(--muted); }
+.group-empty:empty { display: none; }
+
+.player.is-offline { color: var(--muted); }
+.player.is-offline img { filter: grayscale(1); opacity: 0.6; }
+
 .state { padding: 18px; background: var(--slot); border-radius: 4px; color: var(--muted); text-align: center; }
 .state:empty { display: none; }
 .state.is-error { color: var(--offline); }

@@ -4,7 +4,18 @@
 (() => {
     const C = window.SITE;
     const START = new Date(C.START);
-    const API_URL = `https://api.mcstatus.io/v2/status/java/${C.SERVER_IP}`;
+    // Statusabfrage über mc-api.io. "host" oder "host:port" aus config.js.
+    const HOST_PATTERN = /^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$/;
+    const [SERVER_HOST, SERVER_PORT] = String(C.SERVER_IP).trim().split(':');
+    const HAS_VALID_IP = HOST_PATTERN.test(SERVER_HOST) &&
+        (SERVER_PORT === undefined || /^\d{1,5}$/.test(SERVER_PORT));
+    const API_URL = HAS_VALID_IP
+        ? `https://mc-api.io/server/JAVA/${encodeURIComponent(SERVER_HOST)}` +
+          (SERVER_PORT ? `/${SERVER_PORT}` : '')
+        : null;
+
+    // Ab dem Ende des Countdowns wird die Liste in online/offline geteilt
+    const isLive = () => START <= Date.now();
     const TALLY_URL = `https://tally.so/r/${C.TALLY_FORM_ID}`;
     const TALLY_EMBED = `https://tally.so/embed/${C.TALLY_FORM_ID}?hideTitle=1&alignLeft=1`;
     const PAGE_SIZE = 24;
@@ -138,7 +149,14 @@
         const left = START - Date.now();
 
         if (left <= 0) {
+            const justEnded = booted && document.body.dataset.phase !== 'live';
             document.body.dataset.phase = 'live';
+
+            if (justEnded) {
+                // Countdown ist gerade abgelaufen: Liste in online/offline teilen
+                renderPlayers();
+                refreshStatus();
+            }
             return;
         }
 
@@ -218,36 +236,53 @@
     /* ---------- Serverstatus ---------- */
     const state = {
         onlineNames: new Set(),
+        serverOnline: false,
         names: [],
         realNames: {},
         playersState: 'loading',
         showAll: false
     };
 
+    let booted = false;
+
     function setStatus(kind, text) {
         $('status').dataset.state = kind;
         $('status-text').textContent = text;
     }
 
+    // Holt den Serverstatus. Ein Server, der nicht antwortet, gilt als offline.
+    async function fetchServer() {
+        if (!API_URL) {
+            return { online: false };
+        }
+
+        const response = await fetch(API_URL, {
+            cache: 'no-store',
+            signal: timeout()
+        });
+
+        // 503 = Server konnte gar nicht angepingt werden, also offline
+        if (response.status === 503) {
+            return { online: false };
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        return response.json();
+    }
+
     async function refreshStatus() {
         try {
-            const response = await fetch(API_URL, {
-                cache: 'no-store',
-                signal: timeout()
-            });
+            const data = await fetchServer();
+            const online = Boolean(data.online);
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.online) {
+            if (online) {
                 setStatus('online', 'Server ist online');
-                $('fact-version').textContent =
-                    data.version?.name_clean || data.version?.name_raw || '–';
+                $('fact-version').textContent = data.version || '–';
                 $('fact-players').textContent =
-                    `${data.players.online} / ${data.players.max}`;
+                    `${data.onlinePlayers ?? 0} / ${data.maxPlayers ?? '–'}`;
             } else if (START > Date.now()) {
                 setStatus('waiting', `Noch offline, Start am ${dateShort} um ${clock} Uhr`);
                 $('fact-version').textContent = '–';
@@ -258,13 +293,16 @@
                 $('fact-players').textContent = '–';
             }
 
-            const online = data.online ? (data.players?.list || []) : [];
+            // Ist der Server offline, gibt es keine Online-Spieler.
+            // Dann landen alle Angemeldeten in "Gerade offline".
+            const names = online
+                ? (data.players || []).filter(n => typeof n === 'string' && n)
+                : [];
 
-            state.onlineNames = new Set(
-                online.map(p => (p.name_clean || p.name_raw).toLowerCase())
-            );
+            state.serverOnline = online;
+            state.onlineNames = new Set(names.map(n => n.toLowerCase()));
 
-            renderOnline(online);
+            renderOnline(names);
             renderPlayers();
         } catch (error) {
             console.error('[Status]', error);
@@ -272,11 +310,10 @@
         }
     }
 
-    function renderOnline(list) {
-        $('online-now').hidden = list.length === 0;
+    function renderOnline(names) {
+        $('online-now').hidden = names.length === 0;
 
-        $('online-list').replaceChildren(...list.map(p => {
-            const name = p.name_clean || p.name_raw;
+        $('online-list').replaceChildren(...names.map(name => {
             const li = el('li');
             const a = el('a', 'chip');
 
@@ -386,21 +423,70 @@
         renderPlayers();
     }
 
+    // Baut einen Listeneintrag für einen angemeldeten Spieler
+    function playerItem(name, online) {
+        const li = el('li');
+        const a = el('a', online ? 'player' : 'player is-offline');
+
+        a.href = profile(name);
+        a.target = '_blank';
+        a.rel = 'noopener';
+
+        const img = el('img');
+        img.alt = '';
+        img.loading = 'lazy';
+
+        loadPlayerHead(img, name);
+
+        a.append(img, el('span', 'name', name));
+
+        const realName = state.realNames[name.toLowerCase()];
+
+        if (realName) {
+            const realNameElement = el('span', 'real-name', realName);
+
+            realNameElement.style.cssText =
+                'font-size:0.8em;color:#999;font-style:italic;margin-left:6px';
+
+            a.append(realNameElement);
+        }
+
+        if (online) {
+            const live = el('span', 'live');
+            live.title = 'Gerade online';
+
+            const sr = el('span', 'visually-hidden', ' (online)');
+
+            a.append(live, sr);
+        }
+
+        li.append(a);
+        return li;
+    }
+
     function renderPlayers() {
         const box = $('players-state');
         const grid = $('player-grid');
+        const groups = $('player-groups');
         const more = $('btn-more');
         const query = $('player-search').value.trim().toLowerCase();
+        const live = isLive();
 
         box.className = 'state';
         box.replaceChildren();
         more.hidden = true;
+
+        // Nach dem Countdown ersetzen die zwei Gruppen die Chip-Zeile "Gerade online"
+        if (live) {
+            $('online-now').hidden = true;
+        }
 
         $('players-count').textContent =
             state.playersState === 'ok' ? `(${state.names.length})` : '';
 
         if (state.playersState !== 'ok') {
             grid.replaceChildren();
+            groups.hidden = true;
 
             if (state.playersState === 'loading') {
                 box.textContent = 'Lade Spieler …';
@@ -430,50 +516,57 @@
             n.toLowerCase().includes(query)
         );
 
+        const isOnline = n =>
+            state.serverOnline && state.onlineNames.has(n.toLowerCase());
+
+        // Vor dem Start: eine gemeinsame Liste. Danach: online und offline getrennt.
+        let ordered = matches;
+
+        if (live) {
+            ordered = [
+                ...matches.filter(isOnline),
+                ...matches.filter(n => !isOnline(n))
+            ];
+        }
+
         const limited =
-            !query && !state.showAll && matches.length > PAGE_SIZE;
+            !query && !state.showAll && ordered.length > PAGE_SIZE;
 
-        const shown = limited ? matches.slice(0, PAGE_SIZE) : matches;
+        const shown = limited ? ordered.slice(0, PAGE_SIZE) : ordered;
 
-        grid.replaceChildren(...shown.map(name => {
-            const li = el('li');
-            const a = el('a', 'player');
+        if (live) {
+            const shownOnline = shown.filter(isOnline);
+            const shownOffline = shown.filter(n => !isOnline(n));
+            const totalOnline = matches.filter(isOnline).length;
+            const totalOffline = matches.length - totalOnline;
 
-            a.href = profile(name);
-            a.target = '_blank';
-            a.rel = 'noopener';
+            grid.replaceChildren();
+            groups.hidden = matches.length === 0;
 
-            const img = el('img');
-            img.alt = '';
-            img.loading = 'lazy';
+            $('grid-online').replaceChildren(
+                ...shownOnline.map(n => playerItem(n, true))
+            );
+            $('grid-offline').replaceChildren(
+                ...shownOffline.map(n => playerItem(n, false))
+            );
 
-            loadPlayerHead(img, name);
+            $('count-online').textContent = `(${totalOnline})`;
+            $('count-offline').textContent = `(${totalOffline})`;
 
-            a.append(img, el('span', 'name', name));
+            $('empty-online').textContent = totalOnline
+                ? ''
+                : state.serverOnline
+                    ? 'Gerade ist niemand von der Liste online.'
+                    : 'Der Server ist gerade offline.';
 
-            const realName = state.realNames[name.toLowerCase()];
+            $('group-offline').hidden = totalOffline === 0;
+        } else {
+            groups.hidden = true;
 
-            if (realName) {
-                const realNameElement = el('span', 'real-name', realName);
-
-                realNameElement.style.cssText =
-                    'font-size:0.8em;color:#999;font-style:italic;margin-left:6px';
-
-                a.append(realNameElement);
-            }
-
-            if (state.onlineNames.has(name.toLowerCase())) {
-                const live = el('span', 'live');
-                live.title = 'Gerade online';
-
-                const sr = el('span', 'visually-hidden', ' (online)');
-
-                a.append(live, sr);
-            }
-
-            li.append(a);
-            return li;
-        }));
+            grid.replaceChildren(
+                ...shown.map(n => playerItem(n, isOnline(n)))
+            );
+        }
 
         if (!matches.length) {
             box.textContent = state.names.length
@@ -483,7 +576,7 @@
 
         if (limited) {
             more.hidden = false;
-            more.textContent = `Alle ${matches.length} anzeigen`;
+            more.textContent = `Alle ${ordered.length} anzeigen`;
         }
     }
 
@@ -530,6 +623,7 @@
     refreshStatus();
     loadPlayers();
     renderPlayers();
+    booted = true;
 
     setInterval(tick, 1000);
     setInterval(refreshStatus, 30000);

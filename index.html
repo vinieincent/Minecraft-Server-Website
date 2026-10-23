@@ -92,6 +92,19 @@
 
         <div id="players-state" class="state" role="status">Lade Spieler …</div>
         <ul class="player-grid" id="player-grid"></ul>
+
+        <!-- Erscheint, sobald der Countdown abgelaufen ist -->
+        <div id="player-groups" hidden>
+            <div class="group" id="group-online">
+                <h3>Gerade online <span class="count" id="count-online"></span></h3>
+                <p class="group-empty" id="empty-online"></p>
+                <ul class="player-grid" id="grid-online"></ul>
+            </div>
+            <div class="group" id="group-offline">
+                <h3>Gerade offline <span class="count" id="count-offline"></span></h3>
+                <ul class="player-grid" id="grid-offline"></ul>
+            </div>
+        </div>
         <button type="button" class="btn btn-secondary btn-small" id="btn-more" hidden></button>
         <p class="small">Neue Anmeldungen erscheinen mit etwas Verzögerung (ca. 5 Minuten).</p>
     </section>
