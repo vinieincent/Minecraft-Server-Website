@@ -166,8 +166,6 @@ main { max-width: var(--wrap); margin: 0 auto; padding: 0 16px 56px; }
     font-weight: 700;
 }
 
-.live-note { font-size: 1.3rem; margin-bottom: 28px; }
-
 /* Countdown als Inventar-Slots */
 .countdown {
     display: grid;
@@ -200,24 +198,61 @@ main { max-width: var(--wrap); margin: 0 auto; padding: 0 16px 56px; }
 [data-phase="soon"] .only-live,
 [data-phase="live"] .only-soon { display: none; }
 
-/* Spielmodus: Timer abgelaufen und Server online.
-   Die Anmeldung tritt zurück, das Spiel steht im Vordergrund. */
-body:not([data-mode="play"]) .only-play,
-[data-mode="play"] .hide-play { display: none; }
-
-[data-mode="play"] .hero { padding-bottom: 0; }
-
-[data-mode="play"] .hero .btn[data-copy-ip] {
-    background: var(--red);
-    box-shadow: 0 4px 0 var(--red-deep);
-    color: #fff;
-    font-size: 1.1rem;
+/* Nach dem Start: Status-Banner, Kacheln, Online-Spieler */
+.live-status {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 640px;
+    margin: 28px auto 0;
 }
-[data-mode="play"] .hero .btn[data-copy-ip]:hover { background: #e84c52; }
 
-.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 460px; }
-.stats .slot { padding-inline: 10px; text-align: center; }
-.stats .num { font-size: clamp(1.8rem, 8vw, 3rem); overflow-wrap: anywhere; }
+.banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 0;
+    padding: clamp(20px, 5vw, 32px) 16px;
+    background: var(--raised);
+    border-radius: 4px;
+    box-shadow: 0 5px 0 #11141f, inset 0 0 0 2px var(--line);
+    font-family: var(--font-pixel);
+    font-size: clamp(1.7rem, 7.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.banner .dot { width: 0.5em; height: 0.5em; background: currentColor; }
+
+.live-status[data-state="online"]  .banner { background: var(--online); box-shadow: 0 5px 0 #11141f; color: #0e2410; }
+.live-status[data-state="offline"] .banner { background: var(--red); box-shadow: 0 5px 0 var(--red-deep); color: #fff; }
+
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0; }
+
+.tile {
+    min-width: 0;
+    padding: 10px 12px 12px;
+    background: var(--slot);
+    border: 4px solid;
+    border-color: #080a12 #4a5476 #4a5476 #080a12;
+    text-align: center;
+}
+
+.tile dt { color: var(--muted); font-size: 0.9rem; }
+
+.tile dd {
+    margin: 2px 0 0;
+    font-family: var(--font-pixel);
+    font-size: clamp(1.1rem, 5vw, 1.7rem);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.live-status .online-now { margin: 6px 0 0; }
+.live-status .online-now h3 { text-align: center; }
+.live-status .chips { justify-content: center; }
+.live-status .link-button { align-self: center; }
 
 /* ---------- Server-IP ---------- */
 .ip-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch; margin: 18px 0; }
@@ -290,25 +325,6 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
 
 .player .live { margin-left: auto; flex: none; width: 10px; height: 10px; background: var(--online); border-radius: 50%; box-shadow: 0 0 8px var(--online); }
 
-.badge-admin {
-    flex: none;
-    padding: 0 8px;
-    background: var(--red);
-    border-radius: 3px;
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    line-height: 1.6;
-}
-
-.group + .group { margin-top: 24px; }
-.group h3 { margin-bottom: 10px; }
-.group-empty { margin: 0 0 10px; color: var(--muted); }
-.group-empty:empty { display: none; }
-
-.player.is-offline { color: var(--muted); }
-.player.is-offline img { filter: grayscale(1); opacity: 0.6; }
-
 .state { padding: 18px; background: var(--slot); border-radius: 4px; color: var(--muted); text-align: center; }
 .state:empty { display: none; }
 .state.is-error { color: var(--offline); }
@@ -353,34 +369,11 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
 #regeln h3 { margin: 24px 0 8px; }
 #regeln .actions { justify-content: flex-start; }
 
+.signup-cta .actions { align-items: center; justify-content: flex-start; }
+
 /* ---------- Footer ---------- */
 .footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; padding: 24px 16px 40px; border-top: 2px solid #11141f; }
 .footer a { padding: 8px; }
-
-/* Kleiner Punkt für die Anmeldung im Spielmodus */
-.signup-dot {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    background: none;
-    border: 0;
-    cursor: pointer;
-}
-.signup-dot::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 10px;
-    height: 10px;
-    margin: -5px 0 0 -5px;
-    background: var(--line);
-    border-radius: 50%;
-    transition: background-color 0.15s, transform 0.15s;
-}
-.signup-dot:hover::before,
-.signup-dot:focus-visible::before { background: var(--red); transform: scale(1.4); }
 
 .noscript { margin: 0; padding: 12px 16px; background: var(--wait); color: #000; text-align: center; }
 
