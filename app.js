@@ -21,7 +21,7 @@
         return e;
     }
 
-    const skin = name => `https://mc-api.io/render/${encodeURIComponent(name)}?size=256`;
+    const skin = name => `https://mc-heads.net/avatar/${encodeURIComponent(name)}/72`;
     const profile = name => `https://namemc.com/profile/${encodeURIComponent(name)}`;
 
     /* ---------- Texte aus config.js einsetzen ---------- */
@@ -288,6 +288,7 @@
     function openSignup() {
        window.location.href = TALLY_URL;
     }
+
     document.querySelectorAll('[data-open-signup]').forEach(b => b.addEventListener('click', openSignup));
     dialog.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => dialog.close()));
     dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });  // Klick auf den Hintergrund
