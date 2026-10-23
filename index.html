@@ -21,7 +21,7 @@
     <nav class="topnav" aria-label="Seitenbereiche">
         <a href="#ip">Server-IP</a>
         <a href="#spieler">Spieler</a>
-        <a href="#ablauf">So geht's</a>
+        <a class="hide-play" href="#ablauf">So geht's</a>
         <a href="#regeln">Regeln</a>
     </nav>
     <button type="button" class="btn btn-primary btn-small" data-open-signup>Anmelden</button>
@@ -34,7 +34,7 @@
         <h1 data-project>Scuffed Attack 3</h1>
         <p class="when">
             <time id="start-time"></time>
-            <span class="free">Kostenlos, keine Gebühr</span>
+            <span class="free hide-play">Kostenlos, keine Gebühr</span>
         </p>
 
         <div class="only-soon">
@@ -46,12 +46,18 @@
             </div>
         </div>
 
-        <p class="live-note only-live">Der Server ist gestartet. Kopiere die IP und leg los!</p>
+        <div class="only-play">
+            <div class="countdown stats" aria-label="Serverstatus">
+                <div class="slot"><span class="num" id="stat-players">–</span><span class="unit">Spieler online</span></div>
+                <div class="slot"><span class="num" id="stat-version">–</span><span class="unit">Version</span></div>
+            </div>
+        </div>
+
+      
 
         <div class="actions">
-            <button type="button" class="btn btn-primary" data-open-signup>Jetzt anmelden</button>
+            <button type="button" class="btn btn-primary hide-play" data-open-signup>Jetzt anmelden</button>
             <button type="button" class="btn btn-secondary only-soon" id="btn-calendar">Im Kalender speichern</button>
-            <button type="button" class="btn btn-secondary only-live" data-copy-ip>IP kopieren</button>
         </div>
     </section>
 
@@ -61,13 +67,13 @@
         <p class="hint">Minecraft Java Edition. Zum Beitreten die IP kopieren und unter „Mehrspieler“ einfügen.</p>
 
         <div class="ip-row">
-            <code class="ip slot-inset" data-ip>mc.craftingkatze.de</code>
+            <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
             <button type="button" class="btn btn-secondary" data-copy-ip>Kopieren</button>
         </div>
 
         <div class="status" id="status" data-state="loading" aria-live="polite">
             <p class="status-line"><span class="dot" aria-hidden="true"></span><span id="status-text">Status wird geladen …</span></p>
-            <dl class="facts">
+            <dl class="facts hide-play">
                 <div><dt>Version</dt><dd id="fact-version">–</dd></div>
                 <div><dt>Spieler online</dt><dd id="fact-players">–</dd></div>
             </dl>
@@ -78,7 +84,7 @@
     <!-- ===== Spieler ===== -->
     <section class="panel" id="spieler" aria-labelledby="players-title">
         <div class="section-head">
-            <h2 id="players-title">Angemeldete Spieler <span class="count" id="players-count"></span></h2>
+            <h2 id="players-title"><span id="players-heading">Angemeldete Spieler</span> <span class="count" id="players-count"></span></h2>
             <label class="search">
                 <span class="visually-hidden">Spieler suchen</span>
                 <input type="search" id="player-search" placeholder="Name suchen" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -92,12 +98,25 @@
 
         <div id="players-state" class="state" role="status">Lade Spieler …</div>
         <ul class="player-grid" id="player-grid"></ul>
+
+        <!-- Erscheint, sobald der Countdown abgelaufen ist -->
+        <div id="player-groups" hidden>
+            <div class="group" id="group-online">
+                <h3>Online: <span class="count" id="count-online"></span></h3>
+                <p class="group-empty" id="empty-online"></p>
+                <ul class="player-grid" id="grid-online"></ul>
+            </div>
+            <div class="group" id="group-offline">
+                <h3>Offline: <span class="count" id="count-offline"></span></h3>
+                <ul class="player-grid" id="grid-offline"></ul>
+            </div>
+        </div>
         <button type="button" class="btn btn-secondary btn-small" id="btn-more" hidden></button>
-        <p class="small">Neue Anmeldungen erscheinen mit etwas Verzögerung (ca. 5 Minuten).</p>
+        <p class="small hide-play">Neue Anmeldungen erscheinen mit etwas Verzögerung (ca. 5 Minuten).</p>
     </section>
 
     <!-- ===== Ablauf ===== -->
-    <section class="panel" id="ablauf" aria-labelledby="steps-title">
+    <section class="panel hide-play" id="ablauf" aria-labelledby="steps-title">
         <h2 id="steps-title">So kommst du auf den Server</h2>
         <ol class="steps">
             <li>
@@ -136,6 +155,7 @@
 <footer class="footer">
     <a href="#" id="home-link">Home</a>
     <a href="#" id="projects-link">Meine Projekte</a>
+    <button type="button" class="signup-dot only-play" data-open-signup aria-label="Anmelden" title="Anmelden"></button>
 </footer>
 
 <!-- ===== Anmelde-Popup (klein, Hintergrund geblurrt, jederzeit schließbar) ===== -->
