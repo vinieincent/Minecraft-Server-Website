@@ -6,10 +6,10 @@
 window.SITE = {
 
     // Name des Projekts (Titel, Überschrift, Kalendereintrag)
-    PROJECT_NAME: 'Scuffed Attack 3',
+    PROJECT_NAME: 'Scuffed Attack / Fitna Scuffed',
 
     // ► SERVER-IP HIER EINFÜGEN (optional mit Port, z. B. 'mc.example.de:25566')
-    SERVER_IP: 'mc.craftingkatze.de',
+    SERVER_IP: 'Noch nicht verfügbar',
 
     // Startzeit. Format: JJJJ-MM-TTTHH:MM:SS+Zeitzone
     // 6. November 2026, 18:00 Uhr deutscher Zeit (nach der Zeitumstellung = +01:00)
@@ -28,6 +28,6 @@ window.SITE = {
     MODPACK_URL: '',
 
     // "Zurück"-Link im Footer
-    HOME_URL: 'https://craftingkatze.de',
-    PROJECTS_URL: 'https://craftingkatze.de/#Projekte'
+    HOME_URL: 'https://vinicent.de',
+    PROJECTS_URL: 'https://vinicent.de/#Projekte'
 };
