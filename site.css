@@ -249,7 +249,7 @@ main { max-width: var(--wrap); margin: 0 auto; padding: 0 16px 56px; }
 
 .chips, .player-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
 
-.player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(25%, 1fr)); }
 
 .player, .chip {
     display: flex;
