@@ -21,6 +21,15 @@
     const PAGE_SIZE = 24;
     const NAME_PATTERN = /^[A-Za-z0-9_]{3,16}$/;
 
+    // Admins aus config.js (ungültige Namen und Doppelte werden ignoriert)
+    const ADMINS = [...new Map(
+        (Array.isArray(C.ADMINS) ? C.ADMINS : [])
+            .map(n => String(n).trim())
+            .filter(n => NAME_PATTERN.test(n))
+            .map(n => [n.toLowerCase(), n])
+    ).values()];
+    const ADMIN_KEYS = new Set(ADMINS.map(n => n.toLowerCase()));
+
     const $ = id => document.getElementById(id);
     const pad2 = n => String(n).padStart(2, '0');
     const timeout = () => AbortSignal.timeout(8000);
@@ -151,6 +160,7 @@
         if (left <= 0) {
             const justEnded = booted && document.body.dataset.phase !== 'live';
             document.body.dataset.phase = 'live';
+            updateMode();
 
             if (justEnded) {
                 // Countdown ist gerade abgelaufen: Liste in online/offline teilen
@@ -236,6 +246,7 @@
     /* ---------- Serverstatus ---------- */
     const state = {
         onlineNames: new Set(),
+        onlineList: [],
         serverOnline: false,
         names: [],
         realNames: {},
@@ -244,6 +255,13 @@
     };
 
     let booted = false;
+
+    // Spielmodus: Timer abgelaufen und Server online.
+    // Dann tritt die Anmeldung zurück (siehe site.css, [data-mode="play"]).
+    function updateMode() {
+        document.body.dataset.mode =
+            isLive() && state.serverOnline ? 'play' : 'default';
+    }
 
     function setStatus(kind, text) {
         $('status').dataset.state = kind;
@@ -300,8 +318,15 @@
                 : [];
 
             state.serverOnline = online;
+            state.onlineList = names;
             state.onlineNames = new Set(names.map(n => n.toLowerCase()));
 
+            $('stat-players').textContent = online
+                ? `${data.onlinePlayers ?? names.length} / ${data.maxPlayers ?? '–'}`
+                : '–';
+            $('stat-version').textContent = online ? (data.version || '–') : '–';
+
+            updateMode();
             renderOnline(names);
             renderPlayers();
         } catch (error) {
@@ -423,8 +448,32 @@
         renderPlayers();
     }
 
-    // Baut einen Listeneintrag für einen angemeldeten Spieler
-    function playerItem(name, online) {
+    // Alle Spieler, die in der Liste stehen: Admins, Angemeldete und
+    // (nach dem Countdown) alle, die gerade online sind, auch ohne Anmeldung.
+    function buildRoster() {
+        const roster = new Map();
+
+        const add = (name, admin) => {
+            const key = name.toLowerCase();
+
+            if (!roster.has(key)) {
+                roster.set(key, { name, admin });
+            }
+        };
+
+        ADMINS.forEach(n => add(n, true));
+        state.names.forEach(n => add(n, false));
+
+        if (isLive() && state.serverOnline) {
+            state.onlineList.forEach(n => add(n, false));
+        }
+
+        return [...roster.values()];
+    }
+
+    // Baut einen Listeneintrag für einen Spieler
+    function playerItem(player, online) {
+        const { name, admin } = player;
         const li = el('li');
         const a = el('a', online ? 'player' : 'player is-offline');
 
@@ -439,6 +488,10 @@
         loadPlayerHead(img, name);
 
         a.append(img, el('span', 'name', name));
+
+        if (admin) {
+            a.append(el('span', 'badge-admin', 'Admin'));
+        }
 
         const realName = state.realNames[name.toLowerCase()];
 
@@ -476,18 +529,24 @@
         box.replaceChildren();
         more.hidden = true;
 
-        // Nach dem Countdown ersetzen die zwei Gruppen die Chip-Zeile "Gerade online"
+        // Nach dem Countdown heißt der Bereich nur noch "Spieler" und die
+        // zwei Gruppen ersetzen die Chip-Zeile "Gerade online"
+        $('players-heading').textContent = live ? 'Spieler' : 'Angemeldete Spieler';
+
         if (live) {
             $('online-now').hidden = true;
         }
 
-        $('players-count').textContent =
-            state.playersState === 'ok' ? `(${state.names.length})` : '';
+        const ok = state.playersState === 'ok';
+        const roster = buildRoster();
 
-        if (state.playersState !== 'ok') {
-            grid.replaceChildren();
-            groups.hidden = true;
+        // Vor dem Start braucht die Liste die Tabelle. Danach reichen auch
+        // Admins und Online-Spieler, falls die Tabelle gerade nicht lädt.
+        const usable = ok || (live && roster.length > 0);
 
+        $('players-count').textContent = usable ? `(${roster.length})` : '';
+
+        if (!ok && (!usable || state.playersState === 'error')) {
             if (state.playersState === 'loading') {
                 box.textContent = 'Lade Spieler …';
             } else if (state.playersState === 'unconfigured') {
@@ -495,7 +554,7 @@
                     'Die Spielerliste erscheint hier, sobald die Anmeldungen laufen.';
             } else {
                 box.classList.add('is-error');
-                box.append('Die Liste konnte nicht geladen werden. ');
+                box.append('Die Liste der Anmeldungen konnte nicht geladen werden. ');
 
                 const retry = el('button', 'link-button', 'Erneut versuchen');
                 retry.type = 'button';
@@ -508,16 +567,20 @@
 
                 box.append(retry);
             }
+        }
 
+        if (!usable) {
+            grid.replaceChildren();
+            groups.hidden = true;
             return;
         }
 
-        const matches = state.names.filter(n =>
-            n.toLowerCase().includes(query)
+        const matches = roster.filter(p =>
+            p.name.toLowerCase().includes(query)
         );
 
-        const isOnline = n =>
-            state.serverOnline && state.onlineNames.has(n.toLowerCase());
+        const isOnline = p =>
+            state.serverOnline && state.onlineNames.has(p.name.toLowerCase());
 
         // Vor dem Start: eine gemeinsame Liste. Danach: online und offline getrennt.
         let ordered = matches;
@@ -525,7 +588,7 @@
         if (live) {
             ordered = [
                 ...matches.filter(isOnline),
-                ...matches.filter(n => !isOnline(n))
+                ...matches.filter(p => !isOnline(p))
             ];
         }
 
@@ -535,8 +598,6 @@
         const shown = limited ? ordered.slice(0, PAGE_SIZE) : ordered;
 
         if (live) {
-            const shownOnline = shown.filter(isOnline);
-            const shownOffline = shown.filter(n => !isOnline(n));
             const totalOnline = matches.filter(isOnline).length;
             const totalOffline = matches.length - totalOnline;
 
@@ -544,10 +605,10 @@
             groups.hidden = matches.length === 0;
 
             $('grid-online').replaceChildren(
-                ...shownOnline.map(n => playerItem(n, true))
+                ...shown.filter(isOnline).map(p => playerItem(p, true))
             );
             $('grid-offline').replaceChildren(
-                ...shownOffline.map(n => playerItem(n, false))
+                ...shown.filter(p => !isOnline(p)).map(p => playerItem(p, false))
             );
 
             $('count-online').textContent = `(${totalOnline})`;
@@ -556,7 +617,7 @@
             $('empty-online').textContent = totalOnline
                 ? ''
                 : state.serverOnline
-                    ? 'Gerade ist niemand von der Liste online.'
+                    ? 'Gerade ist niemand online.'
                     : 'Der Server ist gerade offline.';
 
             $('group-offline').hidden = totalOffline === 0;
@@ -564,14 +625,16 @@
             groups.hidden = true;
 
             grid.replaceChildren(
-                ...shown.map(n => playerItem(n, isOnline(n)))
+                ...shown.map(p => playerItem(p, isOnline(p)))
             );
         }
 
-        if (!matches.length) {
-            box.textContent = state.names.length
+        if (!matches.length && ok) {
+            box.textContent = roster.length
                 ? 'Kein Spieler mit diesem Namen gefunden.'
-                : 'Noch niemand angemeldet. Sei der Erste!';
+                : live
+                    ? 'Noch keine Spieler vorhanden.'
+                    : 'Noch niemand angemeldet. Sei der Erste!';
         }
 
         if (limited) {

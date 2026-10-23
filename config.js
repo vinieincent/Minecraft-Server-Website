@@ -25,6 +25,11 @@ window.SITE = {
     NAME_COLUMN: 4,
     REAL_NAME_COLUMN: 3,
 
+    // Minecraft-Namen der Admins. Sie stehen immer in der Spielerliste
+    // (auch ohne Anmeldung) und bekommen das Label "Admin".
+    // Beispiel: ['VinicentDE', 'Notch']
+    ADMINS: [],
+
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
     MODPACK_URL: '',
 
