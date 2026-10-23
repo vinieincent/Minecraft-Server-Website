@@ -1,81 +1,574 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Momentan nicht verfügbar</title>
-    <style>
-      :root {
-        --bg: #0f172a;
-        --panel: rgba(15, 23, 42, 0.8);
-        --text: #e2e8f0;
-        --muted: #94a3b8;
-        --accent: #38bdf8;
-      }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Scuffed Attack</title>
 
-      * {
-        box-sizing: border-box;
-      }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=open_in_new" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 
-      html, body {
-        margin: 0;
-        min-height: 100%;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #333;
-      }
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/server-style3.css">
+</head>
+<body>
 
-      body {
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 24px;
-      }
+<!-- Winter-Hinweis (Klick irgendwo schließt) -->
+<div id="winterPopup" class="screen-popup screen-popup--notice" role="dialog" aria-modal="true" onclick="this.hidden = true">
+    <div class="notice-card">
+        <h2>Scuffed Attack 3</h2>
+        <p>Startet im Winter 2026</p>
+        <button type="button" class="notice-button">Verstanden</button>
+    </div>
+</div>
 
-      .container {
-        width: min(100%, 760px);
-        background: var(--panel);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 20px;
-        padding: 56px 32px;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(8px);
-      }
+<!-- Scuffed-Attack-2-Popup (aktuell deaktiviert, siehe SHOW_SA2_POPUP im Script) -->
+<div id="fullscreen-popup" class="screen-popup screen-popup--dark" role="dialog" aria-modal="true" hidden>
+    <button type="button" class="close-popup" aria-label="Schließen" onclick="closeFullscreenPopup()">×</button>
+    <div class="popup-content">
+        <h1 class="popup-title">Scuffed Attack 2</h1>
+        <p class="popup-subtitle">Startet am 7. November 2025!</p>
 
-      .badge {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 999px;
-        border: 1px solid rgba(56, 189, 248, 0.5);
-        background: rgba(56, 189, 248, 0.08);
-        color: var(--accent);
-        font-size: 0.8rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-      }
+        <div class="countdown">
+            <div class="countdown-unit"><div class="countdown-item" id="countdown-days">00</div><span class="countdown-label">Tage</span></div>
+            <div class="countdown-unit"><div class="countdown-item" id="countdown-hours">00</div><span class="countdown-label">Stunden</span></div>
+            <div class="countdown-unit"><div class="countdown-item" id="countdown-minutes">00</div><span class="countdown-label">Minuten</span></div>
+            <div class="countdown-unit"><div class="countdown-item" id="countdown-seconds">00</div><span class="countdown-label">Sekunden</span></div>
+        </div>
 
-      h1 {
-        margin: 0;
-        font-size: clamp(2.2rem, 6vw, 4rem);
-        line-height: 1.1;
-        letter-spacing: -0.04em;
-        color: #fff;
-      }
+        <p class="popup-message">Melde dich jetzt an, um bereit zu sein, wenn Scuffed Attack 2 startet!</p>
+        <a href="https://tally.so/r/wo4P4P" class="signup-button">Jetzt registrieren</a>
+        <a href="https://www.paypal.com/pool/9jJ4zu03XI?sr=ancr" target="_blank" rel="noopener" class="signup-button signup-button--paypal">3 € Gebühren zahlen</a>
+        <a class="server-card" href="https://craftingkatze.de/mod-download/scuffed-attack-2-v1.mrpack" target="_blank" rel="noopener">Modpack Download</a>
 
-      p {
-        margin: 20px auto 0;
-        max-width: 540px;
-        color: var(--muted);
-        font-size: 1.1rem;
-        line-height: 1.6;
-      }
-    </style>
-  </head>
-  <body>
-    <main class="container">
-      <div class="badge">Status</div>
-      <h1>Momentan nicht verfügbar</h1>
-    </main>
-  </body>
+        <h3>Bereits registrierte Spieler:</h3>
+        <div class="registered-players-popup">
+            <div id="all-players-list" class="loading">Lade Spieler...</div>
+        </div>
+
+        <a href="https://craftingkatze.de" class="server-card">Zurück</a>
+    </div>
+</div>
+
+<header class="page-header">
+    <h1>Scuffed Attack</h1>
+    <a href="/">
+        <img src="CC v2-1grau (1) - Kopie.png" alt="Craftingkatze Logo" class="logo" draggable="false">
+    </a>
+    <button type="button" id="status-card" class="server-card status-card" data-state="pending"
+            title="Serverstatus: Klicke zum Aktualisieren" onclick="refreshStatus()">
+        <span class="status-dot"></span>
+        <span class="card-text" id="server-status">Lädt...</span>
+    </button>
+</header>
+
+<div class="cards-container">
+    <button type="button" class="server-card" title="Klicke, um die Server-IP zu kopieren" onclick="copyToClipboard()">
+        <span class="material-icons">content_copy</span>
+        <span class="card-text" id="copy-label">mc.craftingkatze.de</span>
+    </button>
+
+    <button type="button" class="server-card" title="Spieleranzahl auf dem Server" onclick="showPlayerList()">
+        <span class="material-icons">groups</span>
+        <span class="card-text"><span id="player-count">Lädt...</span> Spieler online!</span>
+    </button>
+</div>
+
+<div class="cards-container">
+    <button type="button" class="server-card" title="Klicke, um die Server-Daten anzuzeigen" onclick="openServerData()">
+        <span class="material-icons">data_saver_on</span>
+        <span class="card-text">Server Daten</span>
+    </button>
+
+    <button type="button" class="server-card" title="Klicke, um die Server-Map zu öffnen" onclick="openMapPopup()">
+        <span class="material-icons">map</span>
+        <span class="card-text">Server Map</span>
+    </button>
+</div>
+
+<!-- Map-Popup -->
+<div id="map-popup" class="screen-popup screen-popup--map" role="dialog" aria-modal="true" hidden>
+    <button type="button" class="close-popup" aria-label="Schließen" onclick="closeMapPopup()">×</button>
+    <div class="map-popup-content">
+        <h2>Scuffed Attack 2 Map</h2>
+        <img src="map/scuffed-attack-2-map.png" alt="Karte von Scuffed Attack 2" loading="lazy">
+    </div>
+</div>
+
+<main>
+    <section class="content">
+        <h2 class="section-title">Was ist Scuffed Attack</h2>
+        <div class="description">
+            <p>
+                Suchst du nach einem Server, der mehr bietet als nur Spielspaß? Bei Scuffed Attack erwartet dich eine engagierte Community und ein Team, das Wünsche umsetzt, Cheater bannt und für Ordnung sorgt. Spieler wie Benjamin sagen: „Scuffed Attack hat mich hochgeholt – seitdem bin ich ein neuer, glücklicher Mensch!“
+                Unser Server läuft auf der Minecraft-Version <strong id="server-version">...wird geladen...</strong>. Werde Teil der Community und erlebe Gaming auf einem neuen Level.
+            </p>
+        </div>
+    </section>
+
+    <section class="content">
+        <h2 class="section-title">Zitate</h2>
+        <div class="quotes-section">
+            <blockquote class="quote-card">
+                „Scuffed Attack hat mein Leben verändert. Ich war ganz unten, aber er hat mich hochgeholt, und seitdem bin ich ein neuer, glücklicher Mensch.“ – Benjamln_94
+            </blockquote>
+            <blockquote class="quote-card">
+                „Scuffed Attack ist das beste Minecraft-Projekt, das ich je gespielt habe. Es hat alles verändert und mir eine neue Perspektive gegeben!“ – Craftingkatze
+            </blockquote>
+        </div>
+    </section>
+
+    <section class="content">
+        <h2 class="section-title">Scuffed Attack Modpack</h2>
+        <div class="description">
+            <p>
+                Lade dir jetzt das offizielle Modpack für Scuffed Attack 2 herunter, um das optimale Spielerlebnis zu bekommen. Du darfst auch gerne eigene Mods hinzufügen, achte aber bitte darauf, dass diese
+                „fair“ sind und dir keinen Vorteil gegenüber anderen geben, wie z. B. X-Ray, Auto-Totem oder normale Freecam.
+            </p>
+            <h4>Anleitung:</h4>
+            <ol>
+                <li>Lade das Modpack herunter.</li>
+                <li>Stelle sicher, dass du Modrinth installiert hast. Falls nicht, lade es <a href="https://modrinth.com/app" target="_blank" rel="noopener">hier</a> herunter.</li>
+                <li>Klicke auf die heruntergeladene Datei.</li>
+                <li>Deine Mods sollten sich jetzt automatisch herunterladen.</li>
+            </ol>
+        </div>
+        <a class="server-card" href="https://craftingkatze.de/mod-download/scuffed-attack-2-v1.mrpack" target="_blank" rel="noopener">Download</a>
+    </section>
+
+    <section class="content">
+        <h2 class="section-title">Wichtig!</h2>
+        <div class="description">
+            <p>
+                Achtung: Der Server wird bald endgültig abgeschaltet – du hast nur noch wenige Tage, um alles zu erleben! Der Countdown läuft, und sobald die Zeit abgelaufen ist, wird der Server für immer offline sein. Alle Fortschritte und Erlebnisse, die du noch sehen möchtest, müssen jetzt schnell gemacht werden. Nutze die verbleibende Zeit, um dir noch die letzten Eindrücke zu sichern! Weitere Infos zum Map-Download findest du unten.
+            </p>
+            <div class="server-card is-disabled" title="Nach Ablauf ist der Server für immer aus!">
+                <span class="card-text card-label">Verbleibende Zeit:</span>
+                <span id="time-remaining">Lädt...</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <h2 class="section-title">Scuffed Attack 1 Download</h2>
+        <div class="description">
+            <p>
+                Der Download der Karte wird nach Ablauf des Countdowns verfügbar sein. Bis dahin hast du die Gelegenheit, die Welt auf der Live-Karte zu erkunden und all die großartigen Bauwerke, Abenteuer und Veränderungen zu sehen, die die Community erschaffen hat. Unsere Serverwelt wächst ständig, also lohnt es sich, immer wieder einen Blick darauf zu werfen. Der Countdown läuft, also bleib gespannt! Sobald die Zeit um ist, kannst du die komplette Karte bequem herunterladen und für deine eigenen Minecraft-Projekte verwenden oder einfach als Erinnerung an all die coolen Momente, die du auf dem Server erlebt hast.
+            </p>
+        </div>
+        <a class="server-card" id="download-button" title="Nach Ablauf ist der Map-Download möglich" target="_blank" rel="noopener"
+           href="https://drive.usercontent.google.com/download?id=11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39&export=download&authuser=0&confirm=t&uuid=11e3dd3d-9fa9-4ae5-84e6-7ce6e0be6c1f&at=AIrpjvOAQni9lmnszy-D8vRRf9bf%3A1736375994568">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+            </svg>
+            <span id="download-countdown">Lädt...</span>
+        </a>
+    </section>
+
+    <section class="content">
+        <h2 class="section-title">Server Daten</h2>
+        <div class="description">
+            <p>
+                Erfahre mehr über den Status unseres Minecraft-Servers in Echtzeit! Du kannst die aktuellen Spielerzahlen, die Version des Servers und weitere Informationen sehen. Klicke auf den Button, um dir die Statistiken anzeigen zu lassen.
+            </p>
+        </div>
+        <button type="button" class="server-card" onclick="openServerData()">Daten anzeigen</button>
+    </section>
+
+    <section class="projects">
+        <h2>Meine Projekte</h2>
+        <p>Dies ist ein Teil meiner Projektreihe mit coolen und nützlichen kleinen Applikationen. Schau sie dir gerne an :)</p>
+        <div class="project-buttons">
+            <a href="/#Projekte" class="project-button">Hier mehr!</a>
+        </div>
+    </section>
+</main>
+
+<!-- Modals -->
+<div id="overlay" onclick="closeModals()" hidden></div>
+
+<div id="player-list-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="player-list-title" hidden>
+    <h2 id="player-list-title">Spielerliste</h2>
+
+    <div class="player-list-section">
+        <h3><span class="status-indicator online-indicator"></span><span>Online:</span> <span id="online-count" class="player-count">00</span></h3>
+        <div id="online-players"></div>
+    </div>
+
+    <div class="list-divider"></div>
+
+    <div class="player-list-section">
+        <h3><span class="status-indicator offline-indicator"></span><span>Offline:</span> <span id="offline-count" class="player-count">00</span></h3>
+        <div id="offline-players"></div>
+    </div>
+
+    <button type="button" class="server-card" onclick="closeModals()">Schließen</button>
+</div>
+
+<div id="server-data-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="server-data-title" hidden>
+    <h2 id="server-data-title">Serverdaten</h2>
+    <div id="server-data" class="server-data loading">Lade Serverdaten...</div>
+    <button type="button" class="server-card" onclick="closeModals()">Schließen</button>
+</div>
+
+<script>
+// ========== KONFIGURATION ==========
+const CONFIG = {
+    LOCAL_TSV_URL: '/tabelle/example1.tsv',   // schnelle, eigene Kopie der Tabelle
+    FALLBACK_TSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSjFudCkidZAMLqBf2TtXORa27pJhDtHcm_8tmL-iZNMp1x-VVVLCUZ7BT0UUVZt9H8jK07Npvl3ZGu/pub?gid=0&single=true&output=tsv',
+    SERVER_IP: 'mc.craftingkatze.de',
+    API_URL: 'https://api.mcstatus.io/v2/status/java/mc.craftingkatze.de',
+    SERVER_SHUTDOWN_DATE: '2026-01-11T00:30:00',
+    DOWNLOAD_DATE: '2025-01-14T16:30:00',
+    LAUNCH_DATE: '2026-12-31T23:59:59',       // vor diesem Datum zeigt der Status "Winter 2026"
+    CACHE_DURATION: 30000,
+    RETRY_DELAY: 5000,
+    MAX_RETRIES: 3
+};
+
+// Auf true setzen, um das Scuffed-Attack-2-Popup (vor LAUNCH_DATE) wieder anzuzeigen
+const SHOW_SA2_POPUP = false;
+
+const TAGS = {
+    owner:      { cls: 'tag-owner',   label: 'Owner' },
+    admin:      { cls: 'tag-admin',   label: 'Admin' },
+    'co-admin': { cls: 'tag-coadmin', label: 'Co-Admin' },
+    vip:        { cls: 'tag-vip',     label: 'Donor' },
+    player:     { cls: 'tag-player',  label: 'Player' }
+};
+
+// ========== HELFER ==========
+const $ = id => document.getElementById(id);
+const pad2 = n => String(n).padStart(2, '0');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function el(tag, className, text) {
+    const e = document.createElement(tag);
+    if (className) e.className = className;
+    if (text !== undefined) e.textContent = text;
+    return e;
+}
+
+function formatRemaining(ms, withSeconds = false) {
+    const s = Math.floor(ms / 1000);
+    const parts = [`${Math.floor(s / 86400)}d`, `${Math.floor(s % 86400 / 3600)}h`, `${Math.floor(s % 3600 / 60)}m`];
+    if (withSeconds) parts.push(`${s % 60}s`);
+    return parts.join(', ');
+}
+
+// ========== DATEN LADEN (Cache, parallele Anfragen zusammenfassen, Retry) ==========
+const cache = {};
+const pending = {};
+const retries = {};
+
+function cached(key, loader) {
+    const hit = cache[key];
+    if (hit && Date.now() - hit.time < CONFIG.CACHE_DURATION) return Promise.resolve(hit.data);
+    return pending[key] ??= loader()
+        .then(data => (cache[key] = { data, time: Date.now() }, data))
+        .finally(() => delete pending[key]);
+}
+
+function retryLater(key, fn) {
+    retries[key] = (retries[key] || 0) + 1;
+    if (retries[key] <= CONFIG.MAX_RETRIES) {
+        console.log(`[${key}] Wiederholung ${retries[key]}/${CONFIG.MAX_RETRIES}`);
+        setTimeout(fn, CONFIG.RETRY_DELAY);
+    }
+}
+
+async function fetchChecked(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response;
+}
+
+const getServerStatus = () => cached('status', async () => (await fetchChecked(CONFIG.API_URL)).json());
+
+const getPlayers = () => cached('players', async () => {
+    let tsv;
+    try {
+        tsv = await (await fetchChecked(CONFIG.LOCAL_TSV_URL)).text();
+    } catch {
+        console.log('[LOAD] Lokale Tabelle fehlgeschlagen, nutze Google-Tabelle...');
+        tsv = await (await fetchChecked(CONFIG.FALLBACK_TSV_URL)).text();
+    }
+    return parsePlayers(tsv);
+});
+
+// Spalten: 4 = echter Name, 5 = Minecraft-Name, 9 = Rolle, 10/11 = Koordinaten, 12 = bezahlt
+function parsePlayers(tsv) {
+    return tsv.split(/\r?\n/).slice(1)
+        .map(row => row.split('\t'))
+        .filter(c => c.length >= 12)
+        .map(c => {
+            const col = i => (c[i] || '').trim();
+            const tag = col(9).toLowerCase();
+            return {
+                name: col(5),
+                realName: col(4),
+                tag: TAGS[tag] ? tag : 'player',
+                hasPaid: col(12).toLowerCase() === 'true',
+                baseLink: col(10) && col(11)
+                    ? `http://www.map.craftingkatze.de/#world1:${col(10)}:36:${col(11)}:266:0:0:0:1:flat`
+                    : ''
+            };
+        })
+        .filter(p => p.name && p.name !== 'Unbekannt');
+}
+
+// ========== SPIELER-ELEMENTE ==========
+function createTag(tagKey) {
+    const { cls, label } = TAGS[tagKey] || TAGS.player;
+    return el('span', `player-tag ${cls}`, label);
+}
+
+// status: 'online' | 'offline' | undefined (kompakte Ansicht ohne Status/Base-Button)
+function createPlayerItem(p, status) {
+    const item = el('div', 'player-item');
+    item.tabIndex = 0;
+    item.setAttribute('role', 'link');
+    if (!p.hasPaid) item.classList.add('is-unpaid');
+
+    const avatar = el('img', 'player-avatar');
+    avatar.src = `https://mc-heads.net/avatar/${encodeURIComponent(p.name)}/64`;
+    avatar.alt = `${p.name} Avatar`;
+    avatar.loading = 'lazy';
+
+    const names = el('span');
+    names.append(el('span', 'player-name', p.name));
+    if (p.realName) names.append(el('span', 'player-real-name', `(${p.realName})`));
+
+    const info = el('div', 'player-info');
+    info.append(avatar, names);
+
+    const meta = el('div', 'player-meta');
+    if (!p.hasPaid) meta.append(el('span', 'player-unpaid', 'Nicht bezahlt'));
+
+    if (status && p.baseLink) {
+        const base = el('button', 'base-button');
+        base.type = 'button';
+        base.title = 'Zusätzlicher Link';
+        base.innerHTML = '<span class="material-icons">home</span>Find Base';
+        base.addEventListener('click', e => {
+            e.stopPropagation();
+            window.open(p.baseLink, '_blank', 'noopener');
+        });
+        meta.append(base);
+    }
+
+    meta.append(createTag(p.tag));
+    if (status) meta.append(el('span', `player-status status-${status}`, status === 'online' ? 'Online' : 'Offline'));
+    meta.append(el('span', 'material-symbols-outlined', 'open_in_new'));
+
+    item.append(info, meta);
+
+    const openProfile = () => window.open(`https://namemc.com/profile/${encodeURIComponent(p.name)}`, '_blank', 'noopener');
+    item.addEventListener('click', openProfile);
+    item.addEventListener('keydown', e => { if (e.key === 'Enter') openProfile(); });
+    return item;
+}
+
+// ========== SERVERSTATUS & SPIELERANZAHL ==========
+function setStatus(state, text) {
+    $('status-card').dataset.state = state;
+    $('server-status').textContent = text;
+}
+
+async function refreshStatus() {
+    const countEl = $('player-count');
+    const prelaunch = Date.now() < new Date(CONFIG.LAUNCH_DATE);
+    if (prelaunch) setStatus('pending', 'Scuffed Attack 3: Winter 2026');
+
+    try {
+        const data = await getServerStatus();
+        retries.status = 0;
+
+        if (!prelaunch) setStatus(data.online ? 'online' : 'offline', data.online ? 'Server Online!' : 'Server Offline!');
+
+        const count = data.online ? data.players.online : 0;
+        countEl.textContent = count;
+        countEl.classList.remove('error-message');
+        document.title = count > 0 ? `Scuffed Attack - ${count}` : 'Scuffed Attack';
+
+        $('server-version').textContent = data.online && data.version
+            ? (data.version.name_clean || data.version.name_raw)
+            : 'unbekannt';
+    } catch (error) {
+        console.error('[Status] Fehler:', error);
+        countEl.textContent = 'Fehler';
+        countEl.classList.add('error-message');
+        if (!prelaunch) setStatus('offline', 'Status nicht verfügbar');
+        retryLater('status', refreshStatus);
+    }
+}
+
+// ========== MODALS ==========
+function openModal(id) {
+    $(id).hidden = false;
+    $('overlay').hidden = false;
+}
+
+function closeModals() {
+    document.querySelectorAll('.modal').forEach(m => m.hidden = true);
+    $('overlay').hidden = true;
+}
+
+// ========== SPIELERLISTE ==========
+function showPlayerList() {
+    openModal('player-list-modal');
+    renderPlayerList();
+}
+
+async function renderPlayerList() {
+    const [statusRes, playersRes] = await Promise.allSettled([getServerStatus(), getPlayers()]);
+    const data = statusRes.status === 'fulfilled' ? statusRes.value : null;
+    const registered = playersRes.status === 'fulfilled' ? playersRes.value : null;
+
+    const online = data?.online ? (data.players?.list || []) : [];
+    const known = new Map((registered || []).map(p => [p.name, p]));
+    const onlineNames = new Set(online.flatMap(o => [o.name_clean, o.name_raw]));
+    const offline = (registered || []).filter(p => !onlineNames.has(p.name));
+
+    $('online-players').replaceChildren(...online.map(o => {
+        const name = o.name_clean || o.name_raw;
+        return createPlayerItem(known.get(name) || { name, realName: '', tag: 'player', hasPaid: false, baseLink: '' }, 'online');
+    }));
+    $('offline-players').replaceChildren(...offline.map(p => createPlayerItem(p, 'offline')));
+
+    $('online-count').textContent = pad2(online.length);
+    $('offline-count').textContent = registered ? pad2(offline.length) : 'Fehler';
+
+    if (!data || !registered) retryLater('playerList', renderPlayerList);
+}
+
+// ========== SERVERDATEN ==========
+async function openServerData() {
+    openModal('server-data-modal');
+    const box = $('server-data');
+    box.textContent = 'Lade Serverdaten...';
+    box.className = 'server-data loading';
+
+    try {
+        const data = await getServerStatus();
+        box.classList.remove('loading');
+
+        const widgets = `
+            <img src="https://api.mcstatus.io/v2/widget/java/${CONFIG.SERVER_IP}?format=image" alt="Minecraft Server Status" loading="lazy">
+            <iframe src="https://de.namemc.com/server/${CONFIG.SERVER_IP}/embed" title="NameMC Server" width="728" height="90"></iframe>`;
+
+        box.innerHTML = data.online ? `
+            <div class="server-stat"><span class="material-icons-outlined">check_circle</span><strong>Server Online:</strong> Ja</div>
+            <div class="server-stat"><span class="material-icons-outlined">people</span><strong>Spieler Online:</strong> ${esc(data.players.online)} / ${esc(data.players.max)}</div>
+            <div class="server-stat"><span class="material-icons-outlined">settings</span><strong>Version:</strong> ${esc(data.version.name_clean || data.version.name_raw)}</div>
+            ${widgets}` : widgets;
+    } catch (error) {
+        box.classList.remove('loading');
+        box.classList.add('error-message');
+        box.innerHTML = `<strong>Fehler beim Abrufen der Daten:</strong> ${esc(error.message)}`;
+    }
+}
+
+// ========== SERVER-IP KOPIEREN ==========
+async function copyToClipboard() {
+    const label = $('copy-label');
+    try {
+        await navigator.clipboard.writeText(CONFIG.SERVER_IP);
+    } catch (error) {
+        console.error('[Clipboard] Fehler:', error);
+        return;
+    }
+    label.textContent = 'Kopiert!';
+    setTimeout(() => label.textContent = CONFIG.SERVER_IP, 1000);
+}
+
+// ========== COUNTDOWNS ==========
+function updateCountdowns() {
+    const now = Date.now();
+
+    const shutdownLeft = new Date(CONFIG.SERVER_SHUTDOWN_DATE) - now;
+    $('time-remaining').textContent = shutdownLeft > 0 ? formatRemaining(shutdownLeft, true) : 'Der Server ist abgelaufen.';
+
+    const downloadLeft = new Date(CONFIG.DOWNLOAD_DATE) - now;
+    $('download-countdown').textContent = downloadLeft > 0 ? formatRemaining(downloadLeft) : 'Download verfügbar!';
+}
+
+// ========== SCUFFED-ATTACK-2-POPUP ==========
+function showFullscreenPopup() {
+    if (!SHOW_SA2_POPUP || Date.now() >= new Date(CONFIG.LAUNCH_DATE)) return;
+    $('fullscreen-popup').hidden = false;
+    startPopupCountdown();
+    renderRegisteredPlayers();
+}
+
+function closeFullscreenPopup() {
+    $('fullscreen-popup').hidden = true;
+}
+
+function startPopupCountdown() {
+    const target = new Date(CONFIG.LAUNCH_DATE).getTime();
+    const tick = () => {
+        const left = target - Date.now();
+        if (left <= 0) {
+            clearInterval(timer);
+            closeFullscreenPopup();
+            return;
+        }
+        $('countdown-days').textContent    = pad2(Math.floor(left / 86400000));
+        $('countdown-hours').textContent   = pad2(Math.floor(left % 86400000 / 3600000));
+        $('countdown-minutes').textContent = pad2(Math.floor(left % 3600000 / 60000));
+        $('countdown-seconds').textContent = pad2(Math.floor(left % 60000 / 1000));
+    };
+    const timer = setInterval(tick, 1000);
+    tick();
+}
+
+async function renderRegisteredPlayers() {
+    const list = $('all-players-list');
+    list.className = 'loading';
+    list.textContent = 'Lade Spieler...';
+
+    try {
+        const players = await getPlayers();
+        retries.registered = 0;
+        list.className = '';
+        list.replaceChildren();
+
+        if (!players.length) {
+            list.textContent = 'Noch keine registrierten Spieler.';
+            return;
+        }
+
+        players.slice(0, 18).forEach(p => list.append(createPlayerItem(p)));
+        if (players.length > 18) {
+            const more = el('div', null, `... und ${players.length - 18} weitere Spieler`);
+            more.style.fontStyle = 'italic';
+            list.append(more);
+        }
+    } catch (error) {
+        console.error('[Registrierte Spieler] Fehler:', error);
+        list.className = 'error-message';
+        list.textContent = 'Fehler beim Laden';
+        retryLater('registered', renderRegisteredPlayers);
+    }
+}
+
+// ========== MAP-POPUP ==========
+function openMapPopup()  { $('map-popup').hidden = false; }
+function closeMapPopup() { $('map-popup').hidden = true; }
+
+// ========== START ==========
+document.addEventListener('DOMContentLoaded', () => {
+    showFullscreenPopup();
+    refreshStatus();
+    updateCountdowns();
+    setInterval(refreshStatus, 20000);
+    setInterval(updateCountdowns, 1000);
+});
+</script>
+</body>
 </html>
