@@ -1,3 +1,4 @@
+
 /* =====================================================
    app.js – Logik der Seite. Einstellungen stehen in config.js.
    ===================================================== */
@@ -21,7 +22,65 @@
         return e;
     }
 
-    const skin = name => `https://mc-heads.net/avatar/${encodeURIComponent(name)}/72`;
+    /* ---------- Minecraft UUID und Player Heads ---------- */
+    const UUID_CACHE = new Map();
+    const UUID_PENDING = new Map();
+
+    const skin = uuid =>
+        `https://mc-api.io/render/HEAD/${encodeURIComponent(uuid)}?size=72`;
+
+    async function getPlayerUUID(name) {
+        const key = name.toLowerCase();
+
+        if (UUID_CACHE.has(key)) {
+            return UUID_CACHE.get(key);
+        }
+
+        if (UUID_PENDING.has(key)) {
+            return UUID_PENDING.get(key);
+        }
+
+        const request = (async () => {
+            const response = await fetch(
+                `https://mc-api.io/uuid/${encodeURIComponent(name)}/JAVA`,
+                { signal: timeout() }
+            );
+
+            if (!response.ok) {
+                throw new Error(`UUID-Abfrage fehlgeschlagen: HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.uuid) {
+                throw new Error(`Keine UUID für ${name} gefunden.`);
+            }
+
+            UUID_CACHE.set(key, data.uuid);
+            return data.uuid;
+        })();
+
+        UUID_PENDING.set(key, request);
+
+        try {
+            return await request;
+        } finally {
+            UUID_PENDING.delete(key);
+        }
+    }
+
+    async function loadPlayerHead(img, name) {
+        try {
+            const uuid = await getPlayerUUID(name);
+
+            if (img.isConnected) {
+                img.src = skin(uuid);
+            }
+        } catch (error) {
+            console.error(`[Player Head: ${name}]`, error);
+        }
+    }
+
     const profile = name => `https://namemc.com/profile/${encodeURIComponent(name)}`;
 
     /* ---------- Texte aus config.js einsetzen ---------- */
@@ -164,9 +223,9 @@
             a.target = '_blank';
             a.rel = 'noopener';
             const img = el('img');
-            img.src = skin(name);
             img.alt = '';
             img.loading = 'lazy';
+            loadPlayerHead(img, name);
             a.append(img, el('span', 'name', name));
             li.append(a);
             return li;
@@ -253,9 +312,9 @@
             a.target = '_blank';
             a.rel = 'noopener';
             const img = el('img');
-            img.src = skin(name);
             img.alt = '';
             img.loading = 'lazy';
+            loadPlayerHead(img, name);
             a.append(img, el('span', 'name', name));
             if (state.onlineNames.has(name.toLowerCase())) {
                 const live = el('span', 'live');
