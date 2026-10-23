@@ -30,5 +30,5 @@ window.SITE = {
 
     // "Zurück"-Link im Footer
     HOME_URL: 'https://vinicent.de',
-    PROJECTS_URL: 'https://vinicent.de/#Projekte'
+    PROJECTS_URL: 'https://vinicent.de'
 };
