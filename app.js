@@ -315,8 +315,7 @@
             img.alt = '';
             img.loading = 'lazy';
             loadPlayerHead(img, name);
-            a.append(img, el('span', 'name', name));
-            if (state.onlineNames.has(name.toLowerCase())) {
+            a.append(img, el('span', 'name', name), Object.assign(el('span', 'real-name', row[ C.REAL_NAME_COLUMN ] || ''), { hidden: !(row[C.REAL_NAME_COLUMN] || '').trim() }));            if (state.onlineNames.has(name.toLowerCase())) {
                 const live = el('span', 'live');
                 live.title = 'Gerade online';
                 const sr = el('span', 'visually-hidden', ' (online)');
