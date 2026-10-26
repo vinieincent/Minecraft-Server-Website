@@ -40,8 +40,9 @@
     <nav class="topnav" aria-label="Seitenbereiche">
         <a href="#ip">Server-IP</a>
         <a href="#spieler">Spieler</a>
+        <a href="#regeln" id="rules-nav">Regeln</a>
+        <a href="#modpack" id="modpack-nav" hidden>Modpack</a>
         <a class="hide-play" href="#ablauf">So geht's</a>
-        <a href="#regeln">Regeln</a>
         <a href="#faq" id="faq-nav">FAQ</a>
     </nav>
     <button type="button" class="btn btn-primary btn-small" data-open-signup>Anmelden</button>
@@ -142,6 +143,23 @@
         <p class="small hide-play">Neue Anmeldungen erscheinen mit etwas Verzögerung (ca. 5 Minuten).</p>
     </section>
 
+    <!-- ===== Regeln ===== -->
+    <section class="panel" id="regeln" aria-labelledby="rules-title">
+        <h2 id="rules-title">Regeln</h2>
+        <!-- Die Regeln stehen in config.js (REGELN) -->
+        <ol class="steps rules" id="rules-list"></ol>
+    </section>
+
+    <!-- ===== Modpack ===== -->
+    <section class="panel" id="modpack" aria-labelledby="modpack-title" hidden>
+        <h2 id="modpack-title">Modpack</h2>
+        <p>Das offizielle Modpack läuft über Modrinth: Datei herunterladen, anklicken, fertig.</p>
+        <div class="actions">
+            <a class="btn btn-secondary" id="modpack-link" href="#" target="_blank" rel="noopener">Modpack herunterladen</a>
+            <a class="btn btn-ghost" href="https://modrinth.com/app" target="_blank" rel="noopener">Modrinth holen</a>
+        </div>
+    </section>
+
     <!-- ===== Ablauf ===== -->
     <section class="panel hide-play" id="ablauf" aria-labelledby="steps-title">
         <h2 id="steps-title">So kommst du auf den Server</h2>
@@ -159,23 +177,6 @@
                 <span>Der Server öffnet am <span id="start-short">6. November um 18 Uhr</span>. Ab dann kannst du beitreten.</span>
             </li>
         </ol>
-    </section>
-
-    <!-- ===== Regeln ===== -->
-    <section class="panel" id="regeln" aria-labelledby="rules-title">
-        <h2 id="rules-title">Regeln</h2>
-        <p>
-            Eigene Mods sind erlaubt, solange sie fair bleiben und dir keinen Vorteil gegenüber anderen verschaffen.
-            Nicht erlaubt sind zum Beispiel X-Ray, Auto-Totem oder normale Freecam.
-        </p>
-        <div id="modpack" hidden>
-            <h3>Modpack</h3>
-            <p>Das offizielle Modpack läuft über Modrinth: Datei herunterladen, anklicken, fertig.</p>
-            <div class="actions">
-                <a class="btn btn-secondary" id="modpack-link" href="#" target="_blank" rel="noopener">Modpack herunterladen</a>
-                <a class="btn btn-ghost" href="https://modrinth.com/app" target="_blank" rel="noopener">Modrinth holen</a>
-            </div>
-        </div>
     </section>
 
     <!-- ===== FAQ ===== -->

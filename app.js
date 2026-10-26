@@ -202,6 +202,7 @@
 
     if (C.MODPACK_URL) {
         $('modpack').hidden = false;
+        $('modpack-nav').hidden = false;
         $('modpack-link').href = C.MODPACK_URL;
     }
 
@@ -210,17 +211,17 @@
         $('discord-link').href = C.DISCORD_URL;
     }
 
-    /* ---------- FAQ aus config.js ---------- */
+    /* ---------- Regeln und FAQ aus config.js ---------- */
     // {START} wird zum Startdatum, jedes andere {FELD} zum Wert aus config.js
     const fillPlaceholders = text => String(text).replace(/\{([A-Z_]+)\}/g, (_, key) =>
         key === 'START' ? `${dateYear} um ${clock} Uhr`
             : typeof C[key] === 'string' ? C[key].trim() : ''
     );
 
-    // Antworttext mit [Text](Adresse)-Links in Knoten umwandeln.
+    // Text mit [Text](Adresse)-Links in Knoten umwandeln.
     // Nur https:// und #anker werden zu Links, leere Adressen bleiben Text.
-    function faqAnswer(text) {
-        const p = el('p');
+    function richText(text, tag = 'p') {
+        const p = el(tag);
         const pattern = /\[([^\]]+)\]\(([^)\s]*)\)/g;
         const filled = fillPlaceholders(text);
         let last = 0;
@@ -257,12 +258,26 @@
 
     $('faq-list').replaceChildren(...faq.map(item => {
         const details = el('details', item.nurVorStart ? 'only-soon' : null);
-        details.append(el('summary', null, item.frage), faqAnswer(item.antwort));
+        details.append(el('summary', null, item.frage), richText(item.antwort));
         return details;
     }));
 
     $('faq').hidden = faq.length === 0;
     $('faq-nav').hidden = faq.length === 0;
+
+    const rules = (Array.isArray(C.REGELN) ? C.REGELN : []).filter(
+        item => item && (item.titel || item.text)
+    );
+
+    $('rules-list').replaceChildren(...rules.map(item => {
+        const li = el('li');
+        if (item.titel) li.append(el('strong', null, item.titel));
+        if (item.text) li.append(richText(item.text, 'span'));
+        return li;
+    }));
+
+    $('regeln').hidden = rules.length === 0;
+    $('rules-nav').hidden = rules.length === 0;
 
     /* ---------- Hinweis (Toast) ---------- */
     let toastTimer;

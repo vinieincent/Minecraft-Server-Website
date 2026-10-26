@@ -40,6 +40,21 @@ window.SITE = {
     // Leer lassen = Discord-Button wird ausgeblendet.
     DISCORD_URL: '',
 
+    // Regeln. Einträge hinzufügen, löschen oder umsortieren – die Seite
+    // nummeriert sie automatisch. Leere Liste = kein Regel-Bereich.
+    //   titel: kurze Überschrift der Regel
+    //   text:  Erklärung. Links und Platzhalter wie bei FAQ (siehe unten).
+    REGELN: [
+        {
+            titel: 'Faire Mods sind erlaubt',
+            text: 'Eigene Mods sind erlaubt, solange sie fair bleiben und dir keinen Vorteil gegenüber anderen verschaffen.'
+        },
+        {
+            titel: 'Keine Cheat-Mods',
+            text: 'Nicht erlaubt sind zum Beispiel X-Ray, Auto-Totem oder normale Freecam.'
+        }
+    ],
+
     // Häufige Fragen. Einträge hinzufügen, löschen oder umsortieren –
     // die Seite zeigt sie genau in dieser Reihenfolge. Leere Liste = kein FAQ.
     //   frage:       die Frage

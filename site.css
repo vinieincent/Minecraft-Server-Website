@@ -121,11 +121,11 @@ a:hover { color: #fff; }
     border-bottom: 2px solid #11141f;
 }
 
-.brand { color: var(--text); font-family: var(--font-pixel); font-size: 1.25rem; font-weight: 700; text-decoration: none; }
+.brand { color: var(--text); font-family: var(--font-pixel); font-size: 1.25rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
 .brand:hover { color: #fff; }
 
 .topnav { display: flex; gap: 4px; margin-left: auto; }
-.topnav a { padding: 8px 12px; color: var(--muted); text-decoration: none; border-radius: 4px; }
+.topnav a { padding: 8px 12px; color: var(--muted); text-decoration: none; border-radius: 4px; white-space: nowrap; }
 .topnav a:hover { background: var(--raised); color: #fff; }
 
 /* ---------- Layout ---------- */
@@ -414,8 +414,12 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
     color: var(--muted);
 }
 
-#regeln h3 { margin: 24px 0 8px; }
-#regeln .actions { justify-content: flex-start; }
+/* Regeln: nummerierte Punkte wie "So geht's", aber jede Regel als eigener
+   Kasten mit Rand und Schatten wie beim FAQ */
+.rules { gap: 18px; margin-top: 18px; }
+.rules li { box-shadow: 0 4px 0 #11141f, inset 0 0 0 2px var(--line); }
+
+#modpack .actions { justify-content: flex-start; }
 
 /* ---------- Footer ---------- */
 .footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; padding: 24px 16px 40px; border-top: 2px solid #11141f; }
@@ -522,6 +526,11 @@ dialog[open] { animation: pop 0.18s ease-out; }
 }
 
 /* ---------- Responsive ---------- */
+/* Mit sechs Menüpunkten wird es unter ~960px eng: Abstände verkleinern */
+@media (max-width: 960px) {
+    .topnav a { padding: 8px 8px; font-size: 0.95rem; }
+}
+
 @media (max-width: 720px) {
     .topnav { display: none; }
     .topbar { justify-content: space-between; }
