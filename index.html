@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title data-project></title>
-    <meta name="description" content="Scuffed Attack 3 startet am 6. November 2026 um 18 Uhr. Kostenlos anmelden und mit der Server-IP beitreten.">
+    <meta name="description" content="Startet am 6. November 2026 um 18 Uhr. Kostenlos anmelden und mit der Server-IP beitreten.">
     <meta name="theme-color" content="#1b2030">
     <title data-project>Server</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+    <!-- Link-Vorschau (Discord, WhatsApp …). Diese Dienste führen kein
+         JavaScript aus, darum stehen Name und Datum hier fest im HTML.
+         Bei Änderung von PROJECT_NAME/START hier anpassen und das Bild mit
+         tools/vorschau-bild.html neu erzeugen. -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:url" content="https://vinicent.de/">
+    <meta property="og:title" content="Fitna Scuffed 1">
+    <meta property="og:description" content="Startet am 6. November 2026 um 18 Uhr. Kostenlos anmelden und mit der Server-IP beitreten.">
+    <meta property="og:image" content="https://vinicent.de/assets/vorschau.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Fitna Scuffed 1 – Freitag, 6. November 2026, 18:00 Uhr. Kostenlos anmelden.">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="fonts/atkinson-hyperlegible-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="site.css">
 </head>
 <body data-phase="soon">
@@ -21,8 +40,10 @@
     <nav class="topnav" aria-label="Seitenbereiche">
         <a href="#ip">Server-IP</a>
         <a href="#spieler">Spieler</a>
+        <a href="#regeln" id="rules-nav">Regeln</a>
+        <a href="#modpack" id="modpack-nav" hidden>Modpack</a>
         <a class="hide-play" href="#ablauf">So geht's</a>
-        <a href="#regeln">Regeln</a>
+        <a href="#faq" id="faq-nav">FAQ</a>
     </nav>
     <button type="button" class="btn btn-primary btn-small" data-open-signup>Anmelden</button>
 </header>
@@ -31,7 +52,22 @@
 
     <!-- ===== Start / Countdown ===== -->
     <section class="hero" id="top">
+        <!-- Kleiner Status über dem Titel: grün = online, rot = offline.
+             Klick springt zur Spielerliste. -->
+        <p class="hero-status-wrap">
+            <a class="hero-status" id="hero-status" href="#spieler" data-state="loading">
+                <span class="dot" aria-hidden="true"></span><span id="hero-status-text">Status wird geladen …</span>
+            </a>
+        </p>
+
         <h1 data-project>Server</h1>
+
+        <!-- Im Spielmodus: IP klein direkt unter dem Titel -->
+        <div class="hero-ip only-play">
+            <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
+            <button type="button" class="btn btn-secondary btn-small" data-copy-ip disabled>Kopieren</button>
+        </div>
+
         <p class="when">
             <time id="start-time"></time>
             <span class="free hide-play">Kostenlos</span>
@@ -46,38 +82,42 @@
             </div>
         </div>
 
-        <div class="only-play">
-            <div class="countdown stats" aria-label="Serverstatus">
-                <div class="slot"><span class="num" id="stat-players">–</span><span class="unit">Spieler online</span></div>
-                <div class="slot"><span class="num" id="stat-version">–</span><span class="unit">Version</span></div>
-            </div>
-        </div>
-
-      
-
         <div class="actions">
             <button type="button" class="btn btn-primary hide-play" data-open-signup>Jetzt anmelden</button>
             <button type="button" class="btn btn-secondary only-soon" id="btn-calendar">Im Kalender speichern</button>
+            <a class="btn btn-secondary" id="discord-link" href="#" target="_blank" rel="noopener" hidden>Discord beitreten</a>
+        </div>
+    </section>
+
+    <!-- ===== Serverstatus ===== -->
+    <section class="panel" id="serverstatus" aria-labelledby="status-title">
+        <h2 id="status-title">Serverstatus</h2>
+
+        <!-- Wie in der Minecraft-Serverliste: Icon und MOTD, nur wenn online -->
+        <div class="server-card slot-inset" id="server-card" hidden>
+            <img class="server-icon" id="server-icon" alt="" width="64" height="64" hidden>
+            <p class="motd" id="server-motd"></p>
+        </div>
+
+        <div class="status" id="status" data-state="loading" aria-live="polite">
+            <p class="status-line"><span class="dot" aria-hidden="true"></span><span id="status-text">Status wird geladen …</span></p>
+            <!-- Dezent neben dem Status; per CSS nur sichtbar, wenn online -->
+            <dl class="facts">
+                <div><dt>Spieler</dt><dd id="fact-players">–</dd></div>
+                <div><dt>Version</dt><dd id="fact-version">–</dd></div>
+            </dl>
+            <button type="button" class="link-button" id="btn-refresh">Status aktualisieren</button>
         </div>
     </section>
 
     <!-- ===== Server-IP ===== -->
-    <section class="panel connect" id="ip" aria-labelledby="ip-title">
+    <section class="panel" id="ip" aria-labelledby="ip-title">
         <h2 id="ip-title">Server-IP</h2>
         <p class="hint">Minecraft Java Edition. Zum Beitreten die IP kopieren und unter „Mehrspieler“ einfügen.</p>
 
         <div class="ip-row">
             <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
-            <button type="button" class="btn btn-secondary" data-copy-ip>Kopieren</button>
-        </div>
-
-        <div class="status" id="status" data-state="loading" aria-live="polite">
-            <p class="status-line"><span class="dot" aria-hidden="true"></span><span id="status-text">Status wird geladen …</span></p>
-            <dl class="facts hide-play">
-                <div><dt>Version</dt><dd id="fact-version">–</dd></div>
-                <div><dt>Spieler online</dt><dd id="fact-players">–</dd></div>
-            </dl>
-            <button type="button" class="link-button" id="btn-refresh">Status aktualisieren</button>
+            <button type="button" class="btn btn-secondary" data-copy-ip disabled>Kopieren</button>
         </div>
     </section>
 
@@ -115,6 +155,23 @@
         <p class="small hide-play">Neue Anmeldungen erscheinen mit etwas Verzögerung (ca. 5 Minuten).</p>
     </section>
 
+    <!-- ===== Regeln ===== -->
+    <section class="panel" id="regeln" aria-labelledby="rules-title">
+        <h2 id="rules-title">Regeln</h2>
+        <!-- Die Regeln stehen in config.js (REGELN) -->
+        <div class="faq" id="rules-list"></div>
+    </section>
+
+    <!-- ===== Modpack ===== -->
+    <section class="panel" id="modpack" aria-labelledby="modpack-title" hidden>
+        <h2 id="modpack-title">Modpack</h2>
+        <p>Das offizielle Modpack läuft über Modrinth: Datei herunterladen, anklicken, fertig.</p>
+        <div class="actions">
+            <a class="btn btn-secondary" id="modpack-link" href="#" target="_blank" rel="noopener">Modpack herunterladen</a>
+            <a class="btn btn-ghost" href="https://modrinth.com/app" target="_blank" rel="noopener">Modrinth holen</a>
+        </div>
+    </section>
+
     <!-- ===== Ablauf ===== -->
     <section class="panel hide-play" id="ablauf" aria-labelledby="steps-title">
         <h2 id="steps-title">So kommst du auf den Server</h2>
@@ -134,21 +191,11 @@
         </ol>
     </section>
 
-    <!-- ===== Regeln ===== -->
-    <section class="panel" id="regeln" aria-labelledby="rules-title">
-        <h2 id="rules-title">Regeln</h2>
-        <p>
-            Eigene Mods sind erlaubt, solange sie fair bleiben und dir keinen Vorteil gegenüber anderen verschaffen.
-            Nicht erlaubt sind zum Beispiel X-Ray, Auto-Totem oder normale Freecam.
-        </p>
-        <div id="modpack" hidden>
-            <h3>Modpack</h3>
-            <p>Das offizielle Modpack läuft über Modrinth: Datei herunterladen, anklicken, fertig.</p>
-            <div class="actions">
-                <a class="btn btn-secondary" id="modpack-link" href="#" target="_blank" rel="noopener">Modpack herunterladen</a>
-                <a class="btn btn-ghost" href="https://modrinth.com/app" target="_blank" rel="noopener">Modrinth holen</a>
-            </div>
-        </div>
+    <!-- ===== FAQ ===== -->
+    <section class="panel" id="faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">Häufige Fragen</h2>
+        <!-- Fragen und Antworten stehen in config.js (FAQ) -->
+        <div class="faq" id="faq-list"></div>
     </section>
 </main>
 
