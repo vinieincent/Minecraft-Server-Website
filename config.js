@@ -146,7 +146,7 @@ window.SITE = {
             titel: 'Scuffed Attack 1',
             zeitraum: 'Winter 2024',
             beschreibung: 'Lade dir jetzt die Scuffed Attack 1 Map herunter.',
-            download: 'https://drive.google.com/file/d/11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39/view?usp=sharing',
+            download: 'https://drive.usercontent.google.com/download?id=11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39&export=download&authuser=0',
             downloadText: 'Welt herunterladen'
         }
     ]
