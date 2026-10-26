@@ -191,6 +191,7 @@
     $('signup-newtab').href = TALLY_URL;
     $('home-link').href = C.HOME_URL;
     $('projects-link').href = C.PROJECTS_URL;
+    $('footer-year').textContent = new Date().getFullYear();
 
     // Ist der Server online, ersetzt die Spielerzahl den Startzeit-Teil
     // (siehe setOnlineCount)

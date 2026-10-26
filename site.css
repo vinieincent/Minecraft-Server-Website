@@ -51,7 +51,7 @@ h3 { font-size: 1.2rem; }
 p  { margin: 0 0 1rem; }
 img, iframe { max-width: 100%; }
 
-a { color: var(--link); }
+a { color: var(--link); transition: color 0.15s ease, background-color 0.15s ease; }
 a:hover { color: #fff; }
 
 :focus-visible { outline: 3px solid var(--wait); outline-offset: 3px; }
@@ -103,6 +103,7 @@ a:hover { color: #fff; }
 .link-button {
     padding: 4px 0; background: none; border: 0; color: var(--link);
     font: inherit; text-decoration: underline; cursor: pointer;
+    transition: color 0.15s ease;
 }
 .link-button:hover { color: #fff; }
 
@@ -321,6 +322,9 @@ body:not([data-mode="play"]) .only-play,
 .chips, .player-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
 
 .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(25%, 1fr)); }
+/* Karten dürfen schmaler werden als ihr Text, sonst ragen sie bei
+   mittleren Breiten über den Kasten hinaus */
+.player-grid > li { min-width: 0; }
 
 .player, .chip {
     display: flex;
@@ -335,11 +339,12 @@ body:not([data-mode="play"]) .only-play,
     text-decoration: none;
 }
 
-a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
+.player, .chip { transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease; }
+a.player:hover, a.chip:hover { background: #3a4263; color: #fff; transform: translateY(-2px); }
 
 .player img, .chip img { flex: none; width: 36px; height: 36px; image-rendering: pixelated; border-radius: 3px; background: var(--slot); }
-.player span.name, .chip span.name { overflow: hidden; text-overflow: ellipsis; font-weight: 700; }
-.player .real-name { margin-left: 6px; color: #999; font-size: 0.8em; font-style: italic; }
+.player span.name, .chip span.name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.player .real-name { min-width: 0; margin-left: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #999; font-size: 0.8em; font-style: italic; }
 
 .player .live { margin-left: auto; flex: none; width: 10px; height: 10px; background: var(--online); border-radius: 50%; box-shadow: 0 0 8px var(--online); }
 
@@ -440,7 +445,7 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
     font-size: 1.2rem;
     line-height: 1;
 }
-.faq details[open] summary::after { content: '−'; }
+.faq details[open] summary::after { content: '−'; transform: rotate(180deg); }
 .faq details p {
     margin: 0 16px;
     padding: 14px 0 16px;
@@ -448,11 +453,36 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
     color: var(--muted);
 }
 
+/* ---------- Leichte Animationen beim Auf- und Zuklappen ---------- */
+.faq details { transition: box-shadow 0.2s ease; }
+.faq summary { transition: color 0.15s ease; }
+.faq summary::after { transition: transform 0.25s ease; }
+
+/* Antwort blendet beim Öffnen leicht von oben ein (alle Browser) */
+.faq details[open] p { animation: faq-in 0.25s ease-out; }
+@keyframes faq-in {
+    from { opacity: 0; transform: translateY(-6px); }
+}
+
+/* Wo der Browser es kann (aktuelle Chrome/Edge): Kasten fährt beim
+   Öffnen und Schließen weich aus bzw. ein statt zu springen */
+@supports (interpolate-size: allow-keywords) {
+    :root { interpolate-size: allow-keywords; }
+    .faq details::details-content {
+        block-size: 0;
+        overflow: clip;
+        transition: block-size 0.25s ease, content-visibility 0.25s allow-discrete;
+    }
+    .faq details[open]::details-content { block-size: auto; }
+}
+
 #modpack .actions { justify-content: flex-start; }
 
 /* ---------- Footer ---------- */
-.footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; padding: 24px 16px 40px; border-top: 2px solid #11141f; }
+.footer { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 16px 40px; border-top: 2px solid #11141f; text-align: center; }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; }
 .footer a { padding: 8px; }
+.footer-legal { margin: 0; max-width: 560px; color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
 
 /* Kleiner Punkt für die Anmeldung im Spielmodus */
 .signup-dot {
@@ -563,12 +593,12 @@ dialog[open] { animation: pop 0.18s ease-out; }
 @media (max-width: 720px) {
     .topnav { display: none; }
     .topbar { justify-content: space-between; }
-    .player-grid { grid-template-columns: 1fr 1fr; }
+    .player-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 480px) {
     body { font-size: 1rem; }
-    .player-grid { grid-template-columns: 1fr; }
+    .player-grid { grid-template-columns: minmax(0, 1fr); }
     .actions .btn, .ip-row .btn { width: 100%; }
     .steps li { padding-left: 62px; }
     .search, .search input { width: 100%; }
