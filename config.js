@@ -122,7 +122,32 @@ window.SITE = {
         }
     ],
 
-    // "Zurück"-Link im Footer
-    HOME_URL: 'https://vinicent.de',
-    PROJECTS_URL: 'https://vinicent.de'
+    // Vergangene Projekte, ganz unten auf der Seite. Einträge hinzufügen,
+    // löschen oder umsortieren – 1, 2, 3 oder mehr gehen. Leere Liste =
+    // Bereich und Menüpunkt verschwinden.
+    //   titel:        Name des Projekts (Pflicht)
+    //   zeitraum:     z. B. 'Sommer 2025' (optional)
+    //   beschreibung: ein, zwei Sätze (optional)
+    //   download:     Link zum Download, z. B. Welt oder Modpack (optional,
+    //                 ohne Link kein Button). https://… oder Datei im Repo,
+    //                 z. B. 'assets/welt.zip'
+    //   downloadText: Beschriftung des Buttons (optional, Standard „Herunterladen“)
+    //   bild:         Vorschaubild, z. B. 'assets/projekt-1.png' (optional)
+    // TODO: Die zwei Einträge unten sind Platzhalter – bitte echte Daten eintragen.
+    VERGANGENE_PROJEKTE: [
+        {
+            titel: 'Scuffed Attack 2',
+            zeitraum: 'Winter 2025',
+            beschreibung: 'Hier gibt es bald den Download für Scuffed Attack 2.',
+            download: '',
+            downloadText: 'Welt herunterladen'
+        },
+        {
+            titel: 'Scuffed Attack 1',
+            zeitraum: 'Winter 2024',
+            beschreibung: 'Lade dir jetzt die Scuffed Attack 1 Map herunter.',
+            download: 'https://drive.google.com/file/d/11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39/view?usp=sharing',
+            downloadText: 'Welt herunterladen'
+        }
+    ]
 };

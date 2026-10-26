@@ -44,6 +44,7 @@
         <a href="#modpack" id="modpack-nav" hidden>Modpack</a>
         <a class="hide-play" href="#ablauf">So geht's</a>
         <a href="#faq" id="faq-nav">FAQ</a>
+        <a href="#projekte" id="projects-nav" hidden>Projekte</a>
     </nav>
     <button type="button" class="btn btn-primary btn-small" data-open-signup>Anmelden</button>
 </header>
@@ -197,13 +198,16 @@
         <!-- Fragen und Antworten stehen in config.js (FAQ) -->
         <div class="faq" id="faq-list"></div>
     </section>
+
+    <!-- ===== Vergangene Projekte ===== -->
+    <section class="panel" id="projekte" aria-labelledby="projects-title" hidden>
+        <h2 id="projects-title">Vergangene Projekte</h2>
+        <!-- Die Projekte stehen in config.js (VERGANGENE_PROJEKTE) -->
+        <ul class="projects" id="projects-list"></ul>
+    </section>
 </main>
 
 <footer class="footer">
-    <nav class="footer-links" aria-label="Weitere Seiten">
-        <a href="#" id="home-link">Home</a>
-        <a href="#" id="projects-link">Meine Projekte</a>
-    </nav>
     <p class="footer-legal">
         © <span id="footer-year">2026</span> vinicent.de · <span data-project>Server</span><br>
         Kein offizielles Minecraft-Produkt. Nicht von Mojang oder Microsoft genehmigt oder mit ihnen verbunden.

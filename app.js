@@ -189,8 +189,6 @@
     $('start-time').dateTime = START.toISOString();
     $('start-short').textContent = `${dateShort} um ${clock} Uhr`;
     $('signup-newtab').href = TALLY_URL;
-    $('home-link').href = C.HOME_URL;
-    $('projects-link').href = C.PROJECTS_URL;
     $('footer-year').textContent = new Date().getFullYear();
 
     // Ist der Server online, ersetzt die Spielerzahl den Startzeit-Teil
@@ -283,6 +281,47 @@
 
     $('regeln').hidden = rules.length === 0;
     $('rules-nav').hidden = rules.length === 0;
+
+    // Vergangene Projekte als Karten. Download und Bild nur über https://
+    // oder als Datei im Repo (z. B. assets/welt.zip), nichts anderes.
+    const safeUrl = url => {
+        const u = String(url || '').trim();
+        return /^https:\/\//.test(u) || /^[\w][\w./-]*$/.test(u) ? u : '';
+    };
+
+    const projects = (Array.isArray(C.VERGANGENE_PROJEKTE) ? C.VERGANGENE_PROJEKTE : [])
+        .filter(item => item && String(item.titel || '').trim());
+
+    $('projects-list').replaceChildren(...projects.map(item => {
+        const li = el('li', 'project');
+        const image = safeUrl(item.bild);
+        const download = safeUrl(item.download);
+
+        if (image) {
+            const img = el('img', 'project-image');
+            img.src = image;
+            img.alt = '';
+            img.loading = 'lazy';
+            li.append(img);
+        }
+
+        li.append(el('h3', null, item.titel));
+        if (item.zeitraum) li.append(el('p', 'project-time', item.zeitraum));
+        if (item.beschreibung) li.append(richText(item.beschreibung));
+
+        if (download) {
+            const a = el('a', 'btn btn-secondary btn-small', item.downloadText || 'Herunterladen');
+            a.href = download;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            li.append(a);
+        }
+
+        return li;
+    }));
+
+    $('projekte').hidden = projects.length === 0;
+    $('projects-nav').hidden = projects.length === 0;
 
     /* ---------- Hinweis (Toast) ---------- */
     let toastTimer;
