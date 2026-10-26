@@ -23,6 +23,7 @@
 - **Modpack** als eigener Bereich mit Download-Link (optional)
 - **Discord-Button** (optional)
 - **FAQ** mit aufklappbaren Antworten, komplett in `config.js` pflegbar
+- **Vergangene Projekte** als Karten mit Download, in `config.js` pflegbar
 - **Link-Vorschau** für Discord, WhatsApp & Co. und eigenes Favicon
 
 Reines HTML, CSS und JavaScript, kein Build-Schritt, keine Abhängigkeiten. Schriften liegen lokal im Repo.
@@ -42,9 +43,9 @@ Alles Wichtige steht in [`config.js`](config.js). Mehr muss normalerweise nicht 
 | `ADMINS` | Minecraft-Namen, die immer in der Liste stehen und das Label „Admin“ bekommen |
 | `MODPACK_URL` | Link zum Modpack (.mrpack). Leer = ausgeblendet. |
 | `DISCORD_URL` | Discord-Einladung. Leer = ausgeblendet. |
-| `HOME_URL` / `PROJECTS_URL` | Links im Footer |
 | `REGELN` | Liste der Regeln mit `titel` und `text`, aufklappbar wie die FAQ. Leer = kein Regel-Bereich. |
 | `FAQ` | Liste der häufigen Fragen (siehe unten). Leer = kein FAQ-Bereich. |
+| `VERGANGENE_PROJEKTE` | Karten ganz unten mit früheren Projekten und Download (siehe unten). Leer = kein Projekt-Bereich. |
 
 ### FAQ bearbeiten
 
@@ -61,6 +62,25 @@ Jede Frage ist ein Eintrag in `FAQ` in `config.js`. Zum Hinzufügen einen Block 
 - **Platzhalter** wie `{START}` (Startdatum), `{MODPACK_URL}` oder `{DISCORD_URL}` werden durch die Werte aus `config.js` ersetzt. Ist eine Link-Adresse leer, erscheint nur der Text.
 - **`nurVorStart: true`** blendet die Frage aus, sobald der Countdown abgelaufen ist.
 - **`nurMit: 'DISCORD_URL'`** zeigt die Frage nur, wenn das genannte Feld ausgefüllt ist.
+
+### Vergangene Projekte bearbeiten
+
+Jedes Projekt ist ein Eintrag in `VERGANGENE_PROJEKTE` in `config.js`. Ein, zwei, drei oder mehr Einträge gehen, die Karten verteilen sich automatisch. Zum Hinzufügen einen Block kopieren, zum Entfernen löschen.
+
+```js
+{
+    titel: 'Scuffed Attack 2',
+    zeitraum: 'Sommer 2025',
+    beschreibung: 'Ein, zwei Sätze zum Projekt.',
+    download: 'https://…',
+    downloadText: 'Welt herunterladen',
+    bild: 'assets/scuffed-attack-2.png'
+},
+```
+
+- Nur `titel` ist Pflicht, alle anderen Felder sind optional.
+- **`download`** ist ein `https://`-Link oder eine Datei im Repo (z. B. `assets/welt.zip`). Ohne Link gibt es keinen Button. `downloadText` ist die Beschriftung, Standard „Herunterladen“.
+- **`bild`** ist ein Vorschaubild im Format 16:9, am besten in `assets/`.
 
 > [!IMPORTANT]
 > Discord, WhatsApp & Co. führen kein JavaScript aus. Die Link-Vorschau (`og:`-Tags in `index.html` und `assets/vorschau.png`) liest `config.js` deshalb nicht. Ändern sich Name oder Startzeit, dort von Hand anpassen und das Bild neu erzeugen (siehe unten).

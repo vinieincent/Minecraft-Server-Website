@@ -478,9 +478,35 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; transform: tran
 
 #modpack .actions { justify-content: flex-start; }
 
+/* ---------- Vergangene Projekte ---------- */
+/* Karten im FAQ-Stil; auto-fit verteilt 1, 2, 3 oder mehr Projekte gleichmäßig */
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 18px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+.project {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 16px;
+    background: var(--raised);
+    border-radius: 4px;
+    box-shadow: 0 4px 0 #11141f, inset 0 0 0 2px var(--line);
+}
+.project-image { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 3px; background: var(--slot); }
+.project h3 { overflow-wrap: anywhere; }
+.project-time { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.project p:not(.project-time) { margin: 0; color: var(--muted); }
+/* Button sitzt immer unten, auch wenn die Karten nebeneinander verschieden viel Text haben */
+.project .btn { align-self: flex-start; margin-top: auto; }
+
 /* ---------- Footer ---------- */
 .footer { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 16px 40px; border-top: 2px solid #11141f; text-align: center; }
-.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; }
 .footer a { padding: 8px; }
 .footer-legal { margin: 0; max-width: 560px; color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
 
@@ -590,9 +616,13 @@ dialog[open] { animation: pop 0.18s ease-out; }
     .topnav a { padding: 8px 8px; font-size: 0.95rem; }
 }
 
-@media (max-width: 720px) {
+/* Mit bis zu sieben Menüpunkten passt die Navigation unter ~860px nicht mehr */
+@media (max-width: 860px) {
     .topnav { display: none; }
     .topbar { justify-content: space-between; }
+}
+
+@media (max-width: 720px) {
     .player-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 

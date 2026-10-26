@@ -122,7 +122,32 @@ window.SITE = {
         }
     ],
 
-    // "Zurück"-Link im Footer
-    HOME_URL: 'https://vinicent.de',
-    PROJECTS_URL: 'https://vinicent.de'
+    // Vergangene Projekte, ganz unten auf der Seite. Einträge hinzufügen,
+    // löschen oder umsortieren – 1, 2, 3 oder mehr gehen. Leere Liste =
+    // Bereich und Menüpunkt verschwinden.
+    //   titel:        Name des Projekts (Pflicht)
+    //   zeitraum:     z. B. 'Sommer 2025' (optional)
+    //   beschreibung: ein, zwei Sätze (optional)
+    //   download:     Link zum Download, z. B. Welt oder Modpack (optional,
+    //                 ohne Link kein Button). https://… oder Datei im Repo,
+    //                 z. B. 'assets/welt.zip'
+    //   downloadText: Beschriftung des Buttons (optional, Standard „Herunterladen“)
+    //   bild:         Vorschaubild, z. B. 'assets/projekt-1.png' (optional)
+    // TODO: Die zwei Einträge unten sind Platzhalter – bitte echte Daten eintragen.
+    VERGANGENE_PROJEKTE: [
+        {
+            titel: 'Projekt 1',
+            zeitraum: '',
+            beschreibung: 'Platzhalter – Titel, Zeitraum, Beschreibung und Download in config.js eintragen.',
+            download: '',
+            downloadText: 'Welt herunterladen'
+        },
+        {
+            titel: 'Projekt 2',
+            zeitraum: '',
+            beschreibung: 'Platzhalter – Titel, Zeitraum, Beschreibung und Download in config.js eintragen.',
+            download: '',
+            downloadText: 'Welt herunterladen'
+        }
+    ]
 };
