@@ -7,15 +7,19 @@
     // Statusabfrage über mc-api.io. "host" oder "host:port" aus config.js.
     const HOST_PATTERN = /^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$/;
     const [SERVER_HOST, SERVER_PORT] = String(C.SERVER_IP).trim().split(':');
-    const HAS_VALID_IP = HOST_PATTERN.test(SERVER_HOST) &&
+    // Ein Platzhalter wie "Bald verfügbar" ist keine IP: Host braucht einen Punkt
+    const HAS_VALID_IP = HOST_PATTERN.test(SERVER_HOST) && SERVER_HOST.includes('.') &&
         (SERVER_PORT === undefined || /^\d{1,5}$/.test(SERVER_PORT));
     const API_URL = HAS_VALID_IP
         ? `https://mc-api.io/server/JAVA/${encodeURIComponent(SERVER_HOST)}` +
           (SERVER_PORT ? `/${SERVER_PORT}` : '')
         : null;
 
-    // Ab dem Ende des Countdowns wird die Liste in online/offline geteilt
-    const isLive = () => START <= Date.now();
+    // Ab dem Ende des Countdowns wird die Liste in online/offline geteilt.
+    // Einzige Quelle dafür ist tick(): Sie setzt "live" genau einmal auf true,
+    // damit Phase, Modus, Status und Liste immer denselben Stand nutzen.
+    let live = false;
+    const isLive = () => live;
     const TALLY_URL = `https://tally.so/r/${C.TALLY_FORM_ID}`;
     const TALLY_EMBED = `https://tally.so/embed/${C.TALLY_FORM_ID}?hideTitle=1&alignLeft=1`;
     const PAGE_SIZE = 24;
@@ -44,10 +48,14 @@
     /* ---------- Minecraft UUID und Player Heads ---------- */
     const UUID_CACHE = new Map();
     const UUID_PENDING = new Map();
+    // Fehlgeschlagene Abfragen: Name -> Zeitpunkt, ab dem neu gefragt wird
+    const UUID_FAILED = new Map();
+    const UUID_RETRY_MS = 5 * 60 * 1000;
 
     const skin = uuid =>
         `https://mc-api.io/render/HEAD/${encodeURIComponent(uuid)}?size=72`;
 
+    // Gibt die UUID zurück oder null, wenn die Abfrage vor Kurzem fehlschlug
     async function getPlayerUUID(name) {
         const key = name.toLowerCase();
 
@@ -59,19 +67,33 @@
             return UUID_PENDING.get(key);
         }
 
+        if (UUID_FAILED.has(key)) {
+            if (Date.now() < UUID_FAILED.get(key)) {
+                return null;
+            }
+            UUID_FAILED.delete(key);
+        }
+
         const request = (async () => {
             const response = await fetch(
                 `https://mc-api.io/uuid/${encodeURIComponent(name)}/JAVA`,
                 { signal: timeout() }
             );
 
+            // 4xx (außer 429) heißt: Name existiert nicht, nie wieder fragen.
+            // Alles andere (Netz, 429, 5xx) wird nach UUID_RETRY_MS erneut versucht.
+            const permanent = response.status >= 400 && response.status < 500 &&
+                response.status !== 429;
+
             if (!response.ok) {
+                UUID_FAILED.set(key, permanent ? Infinity : Date.now() + UUID_RETRY_MS);
                 throw new Error(`UUID-Abfrage fehlgeschlagen: HTTP ${response.status}`);
             }
 
             const data = await response.json();
 
             if (!data.uuid) {
+                UUID_FAILED.set(key, Infinity);
                 throw new Error(`Keine UUID für ${name} gefunden.`);
             }
 
@@ -83,21 +105,50 @@
 
         try {
             return await request;
+        } catch (error) {
+            if (!UUID_FAILED.has(key)) {
+                UUID_FAILED.set(key, Date.now() + UUID_RETRY_MS);
+            }
+            throw error;
         } finally {
             UUID_PENDING.delete(key);
         }
     }
 
-    async function loadPlayerHead(img, name) {
-        try {
-            const uuid = await getPlayerUUID(name);
+    // Player Heads nacheinander laden: höchstens HEAD_CONCURRENCY Abfragen
+    // gleichzeitig, damit die API nicht wegen zu vieler Anfragen blockiert.
+    const HEAD_CONCURRENCY = 3;
+    const headQueue = [];
+    let headsActive = 0;
 
-            if (img.isConnected) {
-                img.src = skin(uuid);
-            }
-        } catch (error) {
-            console.error(`[Player Head: ${name}]`, error);
+    function drainHeads() {
+        while (headsActive < HEAD_CONCURRENCY && headQueue.length) {
+            const job = headQueue.shift();
+            headsActive++;
+            job().finally(() => {
+                headsActive--;
+                drainHeads();
+            });
         }
+    }
+
+    function loadPlayerHead(img, name) {
+        headQueue.push(async () => {
+            // Inzwischen neu gerendert? Dann ist dieser Kopf nicht mehr nötig.
+            if (!img.isConnected) return;
+
+            try {
+                const uuid = await getPlayerUUID(name);
+
+                if (uuid && img.isConnected) {
+                    img.src = skin(uuid);
+                }
+            } catch (error) {
+                console.error(`[Player Head: ${name}]`, error);
+            }
+        });
+        // Erst nach dem Rendern starten, wenn das Bild schon im DOM hängt
+        queueMicrotask(drainHeads);
     }
 
     const profile = name => `https://namemc.com/profile/${encodeURIComponent(name)}`;
@@ -118,6 +169,13 @@
         month: 'long'
     }).format(START);
 
+    const dateYear = new Intl.DateTimeFormat('de-DE', {
+        ...zone,
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }).format(START);
+
     const clock = new Intl.DateTimeFormat('de-DE', {
         ...zone,
         hour: '2-digit',
@@ -135,6 +193,12 @@
     $('projects-link').href = C.PROJECTS_URL;
 
     document.title = `${C.PROJECT_NAME} – Start am ${dateShort} um ${clock} Uhr`;
+    document.querySelector('meta[name="description"]').content =
+        `${C.PROJECT_NAME} startet am ${dateYear} um ${clock} Uhr. ` +
+        'Kostenlos anmelden und mit der Server-IP beitreten.';
+
+    // Ohne gültige IP gibt es nichts zu kopieren
+    document.querySelectorAll('[data-copy-ip]').forEach(b => b.disabled = !HAS_VALID_IP);
 
     if (C.MODPACK_URL) {
         $('modpack').hidden = false;
@@ -155,15 +219,19 @@
 
     /* ---------- Countdown ---------- */
     function tick() {
+        if (live) return;
+
         const left = START - Date.now();
 
         if (left <= 0) {
-            const justEnded = booted && document.body.dataset.phase !== 'live';
+            live = true;
+            clearInterval(tickTimer);
             document.body.dataset.phase = 'live';
             updateMode();
 
-            if (justEnded) {
+            if (booted) {
                 // Countdown ist gerade abgelaufen: Liste in online/offline teilen
+                // und Status ("Noch offline …" -> "offline") neu holen
                 renderPlayers();
                 refreshStatus();
             }
@@ -179,6 +247,8 @@
 
     /* ---------- Server-IP kopieren ---------- */
     async function copyIp(button) {
+        if (!HAS_VALID_IP) return;
+
         try {
             await navigator.clipboard.writeText(C.SERVER_IP);
         } catch {
@@ -214,18 +284,23 @@
     $('btn-calendar').addEventListener('click', () => {
         const utc = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
         const end = new Date(START.getTime() + 60 * 60 * 1000);
+        // "Fitna Scuffed 1" -> "fitna-scuffed-1" für Dateiname und UID
+        const slug = C.PROJECT_NAME.toLowerCase()
+            .normalize('NFKD').replace(/[̀-ͯ]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'event';
 
         const ics = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Scuffed Attack//DE',
+            `PRODID:-//${C.PROJECT_NAME}//DE`,
             'BEGIN:VEVENT',
-            `UID:${utc(START)}@scuffed-attack`,
+            `UID:${utc(START)}@${slug}`,
             `DTSTAMP:${utc(new Date())}`,
             `DTSTART:${utc(START)}`,
             `DTEND:${utc(end)}`,
             `SUMMARY:${C.PROJECT_NAME} startet`,
-            `DESCRIPTION:Server-IP: ${C.SERVER_IP}`,
+            // Solange noch keine gültige IP eingetragen ist, keine Beschreibung
+            ...(HAS_VALID_IP ? [`DESCRIPTION:Server-IP: ${C.SERVER_IP}`] : []),
             'END:VEVENT',
             'END:VCALENDAR'
         ].join('\r\n');
@@ -234,7 +309,7 @@
         link.href = URL.createObjectURL(
             new Blob([ics], { type: 'text/calendar' })
         );
-        link.download = 'scuffed-attack-3.ics';
+        link.download = `${slug}.ics`;
 
         document.body.append(link);
         link.click();
@@ -255,6 +330,7 @@
     };
 
     let booted = false;
+    let tickTimer;
 
     // Spielmodus: Timer abgelaufen und Server online.
     // Dann tritt die Anmeldung zurück (siehe site.css, [data-mode="play"]).
@@ -301,7 +377,7 @@
                 $('fact-version').textContent = data.version || '–';
                 $('fact-players').textContent =
                     `${data.onlinePlayers ?? 0} / ${data.maxPlayers ?? '–'}`;
-            } else if (START > Date.now()) {
+            } else if (!isLive()) {
                 setStatus('waiting', `Noch offline, Start am ${dateShort} um ${clock} Uhr`);
                 $('fact-version').textContent = '–';
                 $('fact-players').textContent = '–';
@@ -496,12 +572,7 @@
         const realName = state.realNames[name.toLowerCase()];
 
         if (realName) {
-            const realNameElement = el('span', 'real-name', realName);
-
-            realNameElement.style.cssText =
-                'font-size:0.8em;color:#999;font-style:italic;margin-left:6px';
-
-            a.append(realNameElement);
+            a.append(el('span', 'real-name', realName));
         }
 
         if (online) {
@@ -688,7 +759,7 @@
     renderPlayers();
     booted = true;
 
-    setInterval(tick, 1000);
+    if (!live) tickTimer = setInterval(tick, 1000);
     setInterval(refreshStatus, 30000);
     setInterval(loadPlayers, 5 * 60 * 1000);
 

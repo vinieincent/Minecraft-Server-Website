@@ -1,5 +1,5 @@
 /* =============================================
-   site.css – Scuffed Attack 3
+   site.css – Styles der Projektseite (Name kommt aus config.js)
    Look: Deepslate-Blau, Inventar-Slots, harte Pixel-Schatten
    ============================================= */
 
@@ -96,6 +96,9 @@ a:hover { color: #fff; }
 .btn-ghost { background: transparent; color: var(--link); text-decoration: underline; }
 
 .btn-small { min-height: 40px; padding: 6px 16px; font-size: 0.95rem; }
+
+/* z. B. "Kopieren", solange noch keine gültige Server-IP eingetragen ist */
+.btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 
 .link-button {
     padding: 4px 0; background: none; border: 0; color: var(--link);
@@ -287,6 +290,7 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
 
 .player img, .chip img { flex: none; width: 36px; height: 36px; image-rendering: pixelated; border-radius: 3px; background: var(--slot); }
 .player span.name, .chip span.name { overflow: hidden; text-overflow: ellipsis; font-weight: 700; }
+.player .real-name { margin-left: 6px; color: #999; font-size: 0.8em; font-style: italic; }
 
 .player .live { margin-left: auto; flex: none; width: 10px; height: 10px; background: var(--online); border-radius: 50%; box-shadow: 0 0 8px var(--online); }
 
