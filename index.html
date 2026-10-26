@@ -83,15 +83,9 @@
         </div>
     </section>
 
-    <!-- ===== Server-IP ===== -->
-    <section class="panel connect" id="ip" aria-labelledby="ip-title">
-        <h2 id="ip-title">Server-IP</h2>
-        <p class="hint">Minecraft Java Edition. Zum Beitreten die IP kopieren und unter „Mehrspieler“ einfügen.</p>
-
-        <div class="ip-row">
-            <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
-            <button type="button" class="btn btn-secondary" data-copy-ip disabled>Kopieren</button>
-        </div>
+    <!-- ===== Serverstatus ===== -->
+    <section class="panel" id="serverstatus" aria-labelledby="status-title">
+        <h2 id="status-title">Serverstatus</h2>
 
         <!-- Wie in der Minecraft-Serverliste: Icon und MOTD, nur wenn online -->
         <div class="server-card slot-inset" id="server-card" hidden>
@@ -106,6 +100,17 @@
                 <div><dt>Spieler online</dt><dd id="fact-players">–</dd></div>
             </dl>
             <button type="button" class="link-button" id="btn-refresh">Status aktualisieren</button>
+        </div>
+    </section>
+
+    <!-- ===== Server-IP ===== -->
+    <section class="panel" id="ip" aria-labelledby="ip-title">
+        <h2 id="ip-title">Server-IP</h2>
+        <p class="hint">Minecraft Java Edition. Zum Beitreten die IP kopieren und unter „Mehrspieler“ einfügen.</p>
+
+        <div class="ip-row">
+            <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
+            <button type="button" class="btn btn-secondary" data-copy-ip disabled>Kopieren</button>
         </div>
     </section>
 
@@ -147,7 +152,7 @@
     <section class="panel" id="regeln" aria-labelledby="rules-title">
         <h2 id="rules-title">Regeln</h2>
         <!-- Die Regeln stehen in config.js (REGELN) -->
-        <ol class="steps rules" id="rules-list"></ol>
+        <div class="faq" id="rules-list"></div>
     </section>
 
     <!-- ===== Modpack ===== -->

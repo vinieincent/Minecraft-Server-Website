@@ -223,7 +223,7 @@ body:not([data-mode="play"]) .only-play,
 .stats .num { font-size: clamp(1.8rem, 8vw, 3rem); overflow-wrap: anywhere; }
 
 /* ---------- Server-IP ---------- */
-.ip-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch; margin: 18px 0; }
+.ip-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch; margin: 18px 0 0; }
 
 .ip {
     flex: 1 1 280px;
@@ -239,7 +239,7 @@ body:not([data-mode="play"]) .only-play,
 }
 
 /* Serverkarte mit Icon und MOTD (Minecraft-Farbcodes als .mc-*-Klassen) */
-.server-card { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; padding: 10px 14px; }
+.server-card { display: flex; align-items: center; gap: 14px; margin: 16px 0 0; padding: 10px 14px; }
 .server-icon { flex: none; width: 64px; height: 64px; image-rendering: pixelated; }
 .motd { margin: 0; color: #aaaaaa; font-family: var(--font-pixel); font-weight: 500; line-height: 1.35; white-space: pre-line; overflow-wrap: anywhere; }
 
@@ -253,7 +253,7 @@ body:not([data-mode="play"]) .only-play,
 .mc-m { text-decoration: line-through; }
 .mc-n.mc-m { text-decoration: underline line-through; }
 
-.status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; padding-top: 18px; border-top: 2px dashed var(--line); }
+.status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; margin-top: 16px; }
 .status-line { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 700; }
 
 .dot { flex: none; width: 14px; height: 14px; background: var(--muted); border-radius: 50%; }
@@ -413,11 +413,6 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
     border-top: 2px dashed var(--line);
     color: var(--muted);
 }
-
-/* Regeln: nummerierte Punkte wie "So geht's", aber jede Regel als eigener
-   Kasten mit Rand und Schatten wie beim FAQ */
-.rules { gap: 18px; margin-top: 18px; }
-.rules li { box-shadow: 0 4px 0 #11141f, inset 0 0 0 2px var(--line); }
 
 #modpack .actions { justify-content: flex-start; }
 

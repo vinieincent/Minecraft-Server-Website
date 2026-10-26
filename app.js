@@ -269,11 +269,12 @@
         item => item && (item.titel || item.text)
     );
 
+    // Gleiche aufklappbare Kästen wie beim FAQ
     $('rules-list').replaceChildren(...rules.map(item => {
-        const li = el('li');
-        if (item.titel) li.append(el('strong', null, item.titel));
-        if (item.text) li.append(richText(item.text, 'span'));
-        return li;
+        const details = el('details');
+        details.append(el('summary', null, item.titel || item.text));
+        if (item.titel && item.text) details.append(richText(item.text));
+        return details;
     }));
 
     $('regeln').hidden = rules.length === 0;

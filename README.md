@@ -19,7 +19,7 @@
 - **Serverstatus** über [mc-api.io](https://mc-api.io): online/offline, Version, Spielerzahl, Server-Icon und MOTD mit Minecraft-Farben
 - **Spielerliste** aus einer Google-Tabelle, mit Player Heads, Suche und Admin-Label. Nach dem Start getrennt nach online und offline.
 - **Kalendereintrag** (.ics) zum Herunterladen
-- **Regeln** als nummerierte Punkte, in `config.js` pflegbar
+- **Regeln** als aufklappbare Kästen wie die FAQ, in `config.js` pflegbar
 - **Modpack** als eigener Bereich mit Download-Link (optional)
 - **Discord-Button** (optional)
 - **FAQ** mit aufklappbaren Antworten, komplett in `config.js` pflegbar
@@ -43,7 +43,7 @@ Alles Wichtige steht in [`config.js`](config.js). Mehr muss normalerweise nicht 
 | `MODPACK_URL` | Link zum Modpack (.mrpack). Leer = ausgeblendet. |
 | `DISCORD_URL` | Discord-Einladung. Leer = ausgeblendet. |
 | `HOME_URL` / `PROJECTS_URL` | Links im Footer |
-| `REGELN` | Liste der Regeln mit `titel` und `text`, automatisch nummeriert. Leer = kein Regel-Bereich. |
+| `REGELN` | Liste der Regeln mit `titel` und `text`, aufklappbar wie die FAQ. Leer = kein Regel-Bereich. |
 | `FAQ` | Liste der häufigen Fragen (siehe unten). Leer = kein FAQ-Bereich. |
 
 ### FAQ bearbeiten

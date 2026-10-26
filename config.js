@@ -41,9 +41,9 @@ window.SITE = {
     DISCORD_URL: '',
 
     // Regeln. Einträge hinzufügen, löschen oder umsortieren – die Seite
-    // nummeriert sie automatisch. Leere Liste = kein Regel-Bereich.
-    //   titel: kurze Überschrift der Regel
-    //   text:  Erklärung. Links und Platzhalter wie bei FAQ (siehe unten).
+    // zeigt sie wie die FAQ als aufklappbare Kästen. Leere Liste = kein Regel-Bereich.
+    //   titel: kurze Überschrift der Regel (immer sichtbar)
+    //   text:  Erklärung zum Aufklappen. Links und Platzhalter wie bei FAQ (siehe unten).
     REGELN: [
         {
             titel: 'Faire Mods sind erlaubt',
@@ -52,6 +52,30 @@ window.SITE = {
         {
             titel: 'Keine Cheat-Mods',
             text: 'Nicht erlaubt sind zum Beispiel X-Ray, Auto-Totem oder normale Freecam.'
+        },
+        {
+            titel: 'Kein Griefing',
+            text: 'Zerstöre oder verändere keine Bauten anderer Spieler, auch nicht „nur zum Spaß“.'
+        },
+        {
+            titel: 'Nicht stehlen',
+            text: 'Nimm nichts aus fremden Kisten, Bases oder Farmen, wenn der Besitzer es dir nicht erlaubt hat.'
+        },
+        {
+            titel: 'Respektvoll bleiben',
+            text: 'Keine Beleidigungen, kein Rassismus, keine Diskriminierung und kein Spam – im Chat genauso wie im Voice.'
+        },
+        {
+            titel: 'Keine Bugs ausnutzen',
+            text: 'Duping und andere Glitches sind verboten. Wenn du einen Bug findest, melde ihn bitte den Admins.'
+        },
+        {
+            titel: 'Keine Lag-Maschinen',
+            text: 'Baue nichts, was den Server absichtlich ausbremst, zum Beispiel riesige Redstone-Uhren oder Entity-Massen.'
+        },
+        {
+            titel: 'Admins haben das letzte Wort',
+            text: 'Folge den Anweisungen der Admins. Wer gegen die Regeln verstößt, kann verwarnt oder vom Server ausgeschlossen werden.'
         }
     ],
 
@@ -77,7 +101,7 @@ window.SITE = {
         },
         {
             frage: 'Welche Minecraft-Version brauche ich?',
-            antwort: 'Du brauchst die Minecraft Java Edition für PC oder Mac. Die genaue Version steht oben beim [Serverstatus](#ip), sobald der Server online ist.'
+            antwort: 'Du brauchst die Minecraft Java Edition für PC oder Mac. Die genaue Version steht oben beim [Serverstatus](#serverstatus), sobald der Server online ist.'
         },
         {
             frage: 'Brauche ich Mods?',
@@ -89,7 +113,7 @@ window.SITE = {
         },
         {
             frage: 'Ich komme nicht auf den Server.',
-            antwort: 'Schau zuerst beim [Serverstatus](#ip), ob der Server online ist. Kopier die IP am besten mit dem Button, damit kein Zeichen fehlt. Und prüf, ob deine Minecraft-Version zur Version des Servers passt.'
+            antwort: 'Schau zuerst beim [Serverstatus](#serverstatus), ob der Server online ist. Kopier die IP am besten mit dem Button, damit kein Zeichen fehlt. Und prüf, ob deine Minecraft-Version zur Version des Servers passt.'
         },
         {
             frage: 'Gibt es einen Discord?',
