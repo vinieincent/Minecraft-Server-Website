@@ -136,17 +136,17 @@ window.SITE = {
     // TODO: Die zwei Einträge unten sind Platzhalter – bitte echte Daten eintragen.
     VERGANGENE_PROJEKTE: [
         {
-            titel: 'Projekt 1',
-            zeitraum: '',
-            beschreibung: 'Platzhalter – Titel, Zeitraum, Beschreibung und Download in config.js eintragen.',
+            titel: 'Scuffed Attack 2',
+            zeitraum: 'Winter 2025',
+            beschreibung: 'Hier gibt es bald den Download für Scuffed Attack 2.',
             download: '',
             downloadText: 'Welt herunterladen'
         },
         {
-            titel: 'Projekt 2',
-            zeitraum: '',
-            beschreibung: 'Platzhalter – Titel, Zeitraum, Beschreibung und Download in config.js eintragen.',
-            download: '',
+            titel: 'Scuffed Attack 1',
+            zeitraum: 'Winter 2024',
+            beschreibung: 'Lade dir jetzt die Scuffed Attack 1 Map herunter.',
+            download: 'https://drive.google.com/file/d/11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39/view?usp=sharing',
             downloadText: 'Welt herunterladen'
         }
     ]
