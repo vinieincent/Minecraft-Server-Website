@@ -369,6 +369,40 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
 .steps strong { font-size: 1.1rem; }
 .steps span { color: var(--muted); }
 
+/* ---------- FAQ ---------- */
+.faq { display: grid; gap: 10px; margin-top: 16px; }
+.faq details { background: var(--raised); border-radius: 4px; }
+.faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary:hover { color: #fff; }
+
+/* Plus/Minus im Inventar-Slot, wie die Nummern bei "So geht's" */
+.faq summary::after {
+    content: '+';
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    background: var(--slot);
+    border: 3px solid;
+    border-color: #080a12 #4a5476 #4a5476 #080a12;
+    font-family: var(--font-pixel);
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.faq details[open] summary::after { content: '−'; }
+.faq details p { margin: 0; padding: 0 16px 16px; color: var(--muted); }
+
 #regeln h3 { margin: 24px 0 8px; }
 #regeln .actions { justify-content: flex-start; }
 

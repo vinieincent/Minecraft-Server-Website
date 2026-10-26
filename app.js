@@ -205,9 +205,19 @@
         $('modpack-link').href = C.MODPACK_URL;
     }
 
+    document.querySelectorAll('[data-start-long]').forEach(
+        n => n.textContent = `${dateYear} um ${clock} Uhr`
+    );
+
     if (/^https:\/\//.test(C.DISCORD_URL || '')) {
         $('discord-link').hidden = false;
         $('discord-link').href = C.DISCORD_URL;
+
+        // Hinweis in der FAQ ("am besten im Discord")
+        document.querySelectorAll('[data-discord-hint]').forEach(n => {
+            n.hidden = false;
+            n.querySelector('a').href = C.DISCORD_URL;
+        });
     }
 
     /* ---------- Hinweis (Toast) ---------- */

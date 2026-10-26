@@ -20,6 +20,7 @@
 - **Spielerliste** aus einer Google-Tabelle, mit Player Heads, Suche und Admin-Label. Nach dem Start getrennt nach online und offline.
 - **Kalendereintrag** (.ics) zum Herunterladen
 - **Discord-Button** und **Modpack-Link** (optional)
+- **FAQ** mit aufklappbaren Antworten (Texte direkt in `index.html`)
 - **Link-Vorschau** für Discord, WhatsApp & Co. und eigenes Favicon
 
 Reines HTML, CSS und JavaScript, kein Build-Schritt, keine Abhängigkeiten. Schriften liegen lokal im Repo.
