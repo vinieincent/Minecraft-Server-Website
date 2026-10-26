@@ -20,7 +20,7 @@
 - **Spielerliste** aus einer Google-Tabelle, mit Player Heads, Suche und Admin-Label. Nach dem Start getrennt nach online und offline.
 - **Kalendereintrag** (.ics) zum Herunterladen
 - **Discord-Button** und **Modpack-Link** (optional)
-- **FAQ** mit aufklappbaren Antworten (Texte direkt in `index.html`)
+- **FAQ** mit aufklappbaren Antworten, komplett in `config.js` pflegbar
 - **Link-Vorschau** für Discord, WhatsApp & Co. und eigenes Favicon
 
 Reines HTML, CSS und JavaScript, kein Build-Schritt, keine Abhängigkeiten. Schriften liegen lokal im Repo.
@@ -41,6 +41,23 @@ Alles Wichtige steht in [`config.js`](config.js). Mehr muss normalerweise nicht 
 | `MODPACK_URL` | Link zum Modpack (.mrpack). Leer = ausgeblendet. |
 | `DISCORD_URL` | Discord-Einladung. Leer = ausgeblendet. |
 | `HOME_URL` / `PROJECTS_URL` | Links im Footer |
+| `FAQ` | Liste der häufigen Fragen (siehe unten). Leer = kein FAQ-Bereich. |
+
+### FAQ bearbeiten
+
+Jede Frage ist ein Eintrag in `FAQ` in `config.js`. Zum Hinzufügen einen Block kopieren, zum Entfernen löschen. Die Reihenfolge auf der Seite entspricht der Reihenfolge in der Datei.
+
+```js
+{
+    frage: 'Brauche ich Mods?',
+    antwort: 'Nein. Es gibt aber ein offizielles [Modpack]({MODPACK_URL}).'
+},
+```
+
+- **Links** schreibst du als `[Text](https://…)` oder `[Text](#regeln)`.
+- **Platzhalter** wie `{START}` (Startdatum), `{MODPACK_URL}` oder `{DISCORD_URL}` werden durch die Werte aus `config.js` ersetzt. Ist eine Link-Adresse leer, erscheint nur der Text.
+- **`nurVorStart: true`** blendet die Frage aus, sobald der Countdown abgelaufen ist.
+- **`nurMit: 'DISCORD_URL'`** zeigt die Frage nur, wenn das genannte Feld ausgefüllt ist.
 
 > [!IMPORTANT]
 > Discord, WhatsApp & Co. führen kein JavaScript aus. Die Link-Vorschau (`og:`-Tags in `index.html` und `assets/vorschau.png`) liest `config.js` deshalb nicht. Ändern sich Name oder Startzeit, dort von Hand anpassen und das Bild neu erzeugen (siehe unten).

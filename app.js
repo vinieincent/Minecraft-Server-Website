@@ -205,20 +205,64 @@
         $('modpack-link').href = C.MODPACK_URL;
     }
 
-    document.querySelectorAll('[data-start-long]').forEach(
-        n => n.textContent = `${dateYear} um ${clock} Uhr`
-    );
-
     if (/^https:\/\//.test(C.DISCORD_URL || '')) {
         $('discord-link').hidden = false;
         $('discord-link').href = C.DISCORD_URL;
-
-        // Hinweis in der FAQ ("am besten im Discord")
-        document.querySelectorAll('[data-discord-hint]').forEach(n => {
-            n.hidden = false;
-            n.querySelector('a').href = C.DISCORD_URL;
-        });
     }
+
+    /* ---------- FAQ aus config.js ---------- */
+    // {START} wird zum Startdatum, jedes andere {FELD} zum Wert aus config.js
+    const fillPlaceholders = text => String(text).replace(/\{([A-Z_]+)\}/g, (_, key) =>
+        key === 'START' ? `${dateYear} um ${clock} Uhr`
+            : typeof C[key] === 'string' ? C[key].trim() : ''
+    );
+
+    // Antworttext mit [Text](Adresse)-Links in Knoten umwandeln.
+    // Nur https:// und #anker werden zu Links, leere Adressen bleiben Text.
+    function faqAnswer(text) {
+        const p = el('p');
+        const pattern = /\[([^\]]+)\]\(([^)\s]*)\)/g;
+        const filled = fillPlaceholders(text);
+        let last = 0;
+        let match;
+
+        while ((match = pattern.exec(filled))) {
+            p.append(filled.slice(last, match.index));
+
+            const [, label, url] = match;
+
+            if (/^(https:\/\/|#)/.test(url)) {
+                const a = el('a', null, label);
+                a.href = url;
+
+                if (url.startsWith('https://')) {
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                }
+                p.append(a);
+            } else {
+                p.append(label);
+            }
+            last = pattern.lastIndex;
+        }
+
+        p.append(filled.slice(last));
+        return p;
+    }
+
+    const faq = (Array.isArray(C.FAQ) ? C.FAQ : []).filter(item =>
+        item && item.frage && item.antwort &&
+        (!item.nurMit || String(C[item.nurMit] || '').trim())
+    );
+
+    $('faq-list').replaceChildren(...faq.map(item => {
+        const details = el('details', item.nurVorStart ? 'only-soon' : null);
+        details.append(el('summary', null, item.frage), faqAnswer(item.antwort));
+        return details;
+    }));
+
+    $('faq').hidden = faq.length === 0;
+    $('faq-nav').hidden = faq.length === 0;
 
     /* ---------- Hinweis (Toast) ---------- */
     let toastTimer;

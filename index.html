@@ -42,7 +42,7 @@
         <a href="#spieler">Spieler</a>
         <a class="hide-play" href="#ablauf">So geht's</a>
         <a href="#regeln">Regeln</a>
-        <a href="#faq">FAQ</a>
+        <a href="#faq" id="faq-nav">FAQ</a>
     </nav>
     <button type="button" class="btn btn-primary btn-small" data-open-signup>Anmelden</button>
 </header>
@@ -181,32 +181,8 @@
     <!-- ===== FAQ ===== -->
     <section class="panel" id="faq" aria-labelledby="faq-title">
         <h2 id="faq-title">Häufige Fragen</h2>
-        <div class="faq">
-            <details class="only-soon">
-                <summary>Wann geht es los?</summary>
-                <p>Der Server öffnet am <span data-start-long>6. November 2026 um 18:00 Uhr</span>. Vorher kannst du dich schon anmelden und die IP speichern.</p>
-            </details>
-            <details>
-                <summary>Kostet das etwas?</summary>
-                <p>Nein. Anmeldung und Mitspielen sind kostenlos.</p>
-            </details>
-            <details>
-                <summary>Welche Minecraft-Version brauche ich?</summary>
-                <p>Du brauchst die Minecraft Java Edition für PC oder Mac. Die genaue Version steht oben beim Serverstatus, sobald der Server online ist.</p>
-            </details>
-            <details>
-                <summary>Brauche ich Mods?</summary>
-                <p>Nein, normales Minecraft reicht. Eigene Mods sind erlaubt, solange sie fair bleiben. Was nicht erlaubt ist, steht bei den <a href="#regeln">Regeln</a>.</p>
-            </details>
-            <details>
-                <summary>Ich bin angemeldet, stehe aber nicht in der Liste.</summary>
-                <p>Neue Anmeldungen erscheinen mit etwa 5 Minuten Verzögerung. Prüf auch, ob du deinen Minecraft-Namen genau richtig geschrieben hast. Fehlt er danach immer noch, melde dich bei den Admins<span data-discord-hint hidden>, am besten im <a href="#" target="_blank" rel="noopener">Discord</a></span>.</p>
-            </details>
-            <details>
-                <summary>Ich komme nicht auf den Server.</summary>
-                <p>Schau zuerst beim <a href="#ip">Serverstatus</a>, ob der Server online ist. Kopier die IP am besten mit dem Button, damit kein Zeichen fehlt. Und prüf, ob deine Minecraft-Version zur Version des Servers passt.</p>
-            </details>
-        </div>
+        <!-- Fragen und Antworten stehen in config.js (FAQ) -->
+        <div class="faq" id="faq-list"></div>
     </section>
 </main>
 

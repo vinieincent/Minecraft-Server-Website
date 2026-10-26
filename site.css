@@ -370,8 +370,14 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
 .steps span { color: var(--muted); }
 
 /* ---------- FAQ ---------- */
-.faq { display: grid; gap: 10px; margin-top: 16px; }
-.faq details { background: var(--raised); border-radius: 4px; }
+/* Jede Frage ist ein eigener Kasten: Rand und harter Schatten wie .btn-secondary */
+.faq { display: grid; gap: 18px; margin-top: 18px; }
+.faq details {
+    background: var(--raised);
+    border-radius: 4px;
+    box-shadow: 0 4px 0 #11141f, inset 0 0 0 2px var(--line);
+}
+.faq details[open] { box-shadow: 0 4px 0 #11141f, inset 0 0 0 2px var(--link); }
 .faq summary {
     display: flex;
     align-items: center;
@@ -401,7 +407,12 @@ a.player:hover, a.chip:hover { background: #3a4263; color: #fff; }
     line-height: 1;
 }
 .faq details[open] summary::after { content: '−'; }
-.faq details p { margin: 0; padding: 0 16px 16px; color: var(--muted); }
+.faq details p {
+    margin: 0 16px;
+    padding: 14px 0 16px;
+    border-top: 2px dashed var(--line);
+    color: var(--muted);
+}
 
 #regeln h3 { margin: 24px 0 8px; }
 #regeln .actions { justify-content: flex-start; }
