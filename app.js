@@ -516,7 +516,6 @@
             const online = Boolean(data.online);
 
             setServerCard(online ? data : null);
-            $('facts').hidden = !online;
 
             if (online) {
                 setStatus('online', 'Server ist online');
