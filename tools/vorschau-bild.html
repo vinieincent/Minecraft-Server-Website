@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Vorschaubild erzeugen</title>
+    <link rel="stylesheet" href="../fonts/fonts.css">
+    <link rel="stylesheet" href="../site.css">
+    <style>
+        main { max-width: 1240px; margin: 0 auto; padding: 24px 16px; }
+        canvas { display: block; max-width: 100%; height: auto; margin: 12px 0; border: 2px solid var(--line); }
+        .out { margin-bottom: 32px; }
+    </style>
+</head>
+<body>
+<!--
+    Erzeugt das Link-Vorschaubild (Discord, WhatsApp …) und die PNG-Icons
+    aus config.js und favicon.svg. Nach einer Änderung von PROJECT_NAME
+    oder START: Seite über den Webserver öffnen, Bilder herunterladen und
+    die Dateien im Hauptordner ersetzen. In index.html zusätzlich die
+    og:-Tags (Titel, Beschreibung) anpassen.
+-->
+<main>
+    <h1>Vorschaubild erzeugen</h1>
+    <p>Bilder herunterladen und mit genau diesem Dateinamen in den Hauptordner legen.</p>
+    <div id="out"></div>
+</main>
+
+<script src="../config.js"></script>
+<script>
+(() => {
+    const C = window.SITE;
+    const START = new Date(C.START);
+    const zone = { timeZone: 'Europe/Berlin' };
+
+    const date = new Intl.DateTimeFormat('de-DE', {
+        ...zone, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    }).format(START);
+    const clock = new Intl.DateTimeFormat('de-DE', {
+        ...zone, hour: '2-digit', minute: '2-digit'
+    }).format(START);
+
+    const loadIcon = () => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = '../favicon.svg';
+    });
+
+    function canvas(w, h) {
+        const c = document.createElement('canvas');
+        c.width = w;
+        c.height = h;
+        return c;
+    }
+
+    // Schrift so lange verkleinern, bis der Text in maxWidth passt
+    function fit(ctx, text, font, size, maxWidth) {
+        do {
+            ctx.font = `${font.replace('{}', size)}`;
+        } while (ctx.measureText(text).width > maxWidth && --size > 10);
+        return size;
+    }
+
+    function og(icon) {
+        const c = canvas(1200, 630);
+        const ctx = c.getContext('2d');
+
+        // Hintergrund mit 32px-Raster wie auf der Seite
+        ctx.fillStyle = '#1b2030';
+        ctx.fillRect(0, 0, 1200, 630);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.025)';
+        for (let x = 0; x < 1200; x += 32) ctx.fillRect(x, 0, 1, 630);
+        for (let y = 0; y < 630; y += 32) ctx.fillRect(0, y, 1200, 1);
+
+        // Block-Icon links, 16 px * 20
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = '#11141f';
+        ctx.fillRect(88, 163 + 12, 320, 320);
+        ctx.drawImage(icon, 80, 155, 320, 320);
+
+        const left = 470;
+        const maxWidth = 1200 - left - 72;
+
+        ctx.fillStyle = '#eef0f4';
+        ctx.textBaseline = 'alphabetic';
+        fit(ctx, C.PROJECT_NAME, '700 {}px "Pixelify Sans"', 96, maxWidth);
+        ctx.fillText(C.PROJECT_NAME, left, 270);
+
+        ctx.fillStyle = '#a9b1c7';
+        fit(ctx, date, '400 {}px "Atkinson Hyperlegible"', 38, maxWidth);
+        ctx.fillText(date, left, 335);
+        ctx.fillText(`${clock} Uhr`, left, 382);
+
+        // Roter Button wie .btn-primary
+        const label = 'Kostenlos anmelden';
+        ctx.font = '700 34px "Atkinson Hyperlegible"';
+        const bw = ctx.measureText(label).width + 56;
+        ctx.fillStyle = '#8f2429';
+        ctx.fillRect(left, 424 + 6, bw, 68);
+        ctx.fillStyle = '#d93a40';
+        ctx.fillRect(left, 424, bw, 68);
+        ctx.fillStyle = '#fff';
+        ctx.fillText(label, left + 28, 470);
+
+        return c;
+    }
+
+    function square(icon, size, inner) {
+        const c = canvas(size, size);
+        const ctx = c.getContext('2d');
+        const pad = (size - inner) / 2;
+
+        ctx.fillStyle = '#121624';
+        ctx.fillRect(0, 0, size, size);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(icon, pad, pad, inner, inner);
+        return c;
+    }
+
+    async function render() {
+        await document.fonts.load('700 96px "Pixelify Sans"');
+        await document.fonts.load('400 38px "Atkinson Hyperlegible"');
+        await document.fonts.load('700 34px "Atkinson Hyperlegible"');
+        const icon = await loadIcon();
+
+        // apple-touch-icon: 11 px pro Pixel, Rest mit Rahmenfarbe aufgefüllt
+        return {
+            'vorschau.png': og(icon),
+            'apple-touch-icon.png': square(icon, 180, 176),
+            'favicon-32.png': square(icon, 32, 32)
+        };
+    }
+
+    window.renderPreview = render;
+
+    render().then(images => {
+        const out = document.getElementById('out');
+
+        Object.entries(images).forEach(([name, c]) => {
+            const box = document.createElement('div');
+            box.className = 'out';
+
+            const link = document.createElement('a');
+            link.className = 'btn btn-secondary btn-small';
+            link.href = c.toDataURL('image/png');
+            link.download = name;
+            link.textContent = `${name} herunterladen (${c.width}×${c.height})`;
+
+            box.append(link, c);
+            out.append(box);
+        });
+    });
+})();
+</script>
+</body>
+</html>

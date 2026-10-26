@@ -6,6 +6,9 @@
 window.SITE = {
 
     // Name des Projekts (Titel, Überschrift, Kalendereintrag)
+    // Achtung: Die Link-Vorschau (og:-Tags in index.html und vorschau.png)
+    // kann config.js nicht lesen. Bei Änderung von Name oder START dort
+    // anpassen bzw. das Bild mit tools/vorschau-bild.html neu erzeugen.
     PROJECT_NAME: 'Fitna Scuffed 1',
 
     // ► SERVER-IP HIER EINFÜGEN (optional mit Port, z. B. 'mc.example.de:25566')
