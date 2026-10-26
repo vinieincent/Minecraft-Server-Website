@@ -17,14 +17,14 @@
 <!--
     Erzeugt das Link-Vorschaubild (Discord, WhatsApp …), die PNG-Icons und
     das Minecraft-Server-Icon (server-icon.png, 64×64) aus config.js und
-    favicon.svg. Nach einer Änderung von PROJECT_NAME
+    assets/favicon.svg. Nach einer Änderung von PROJECT_NAME
     oder START: Seite über den Webserver öffnen, Bilder herunterladen und
-    die Dateien im Hauptordner ersetzen. In index.html zusätzlich die
+    die Dateien im Ordner assets/ ersetzen. In index.html zusätzlich die
     og:-Tags (Titel, Beschreibung) anpassen.
 -->
 <main>
     <h1>Vorschaubild erzeugen</h1>
-    <p>Bilder herunterladen und mit genau diesem Dateinamen in den Hauptordner legen.</p>
+    <p>Bilder herunterladen und mit genau diesem Dateinamen in den Ordner <code>assets/</code> legen.</p>
     <div id="out"></div>
 </main>
 
@@ -46,7 +46,7 @@
         const img = new Image();
         img.onload = () => resolve(img);
         img.onerror = reject;
-        img.src = '../favicon.svg';
+        img.src = '../assets/favicon.svg';
     });
 
     function canvas(w, h) {
