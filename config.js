@@ -36,6 +36,10 @@ window.SITE = {
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
     MODPACK_URL: '',
 
+    // Discord-Einladung (z. B. 'https://discord.gg/abc123').
+    // Leer lassen = Discord-Button wird ausgeblendet.
+    DISCORD_URL: '',
+
     // "Zurück"-Link im Footer
     HOME_URL: 'https://vinicent.de',
     PROJECTS_URL: 'https://vinicent.de'

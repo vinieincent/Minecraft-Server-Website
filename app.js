@@ -205,6 +205,11 @@
         $('modpack-link').href = C.MODPACK_URL;
     }
 
+    if (/^https:\/\//.test(C.DISCORD_URL || '')) {
+        $('discord-link').hidden = false;
+        $('discord-link').href = C.DISCORD_URL;
+    }
+
     /* ---------- Hinweis (Toast) ---------- */
     let toastTimer;
 
@@ -344,6 +349,66 @@
         $('status-text').textContent = text;
     }
 
+    // MOTD mit Minecraft-Formatcodes (§a, §l, §r, Hex über §x§r§r§g§g§b§b)
+    // in Spans mit .mc-*-Klassen umwandeln. §k (verschleiert) wird ignoriert.
+    function renderMotd(text) {
+        const spans = [];
+        let color = null;
+        let hex = null;
+        let formats = new Set();
+
+        String(text).split(/(§x(?:§[0-9a-f]){6}|§[0-9a-fk-or])/i).forEach(part => {
+            if (!part) return;
+
+            if (/^§x/i.test(part)) {
+                hex = '#' + part.replace(/§x|§/gi, '');
+                color = null;
+                formats = new Set();
+                return;
+            }
+
+            if (/^§[0-9a-fk-or]$/i.test(part)) {
+                const code = part[1].toLowerCase();
+
+                // Farbe oder §r setzt alle Formatierungen zurück
+                if (/[0-9a-fr]/.test(code)) {
+                    color = code === 'r' ? null : code;
+                    hex = null;
+                    formats = new Set();
+                } else if (code !== 'k') {
+                    formats.add(code);
+                }
+                return;
+            }
+
+            const span = el('span', [
+                color && `mc-${color}`,
+                ...[...formats].map(f => `mc-${f}`)
+            ].filter(Boolean).join(' '), part);
+
+            if (hex) span.style.color = hex;
+            spans.push(span);
+        });
+
+        return spans;
+    }
+
+    function setServerCard(data) {
+        const motd = data && (data.motd || data.rawMotd);
+        const icon = data && data.favicon;
+        const validIcon = /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(icon || '');
+
+        $('server-card').hidden = !motd && !validIcon;
+        $('server-motd').replaceChildren(...(motd ? renderMotd(motd) : []));
+        $('server-icon').hidden = !validIcon;
+
+        if (validIcon) {
+            $('server-icon').src = icon;
+        } else {
+            $('server-icon').removeAttribute('src');
+        }
+    }
+
     // Holt den Serverstatus. Ein Server, der nicht antwortet, gilt als offline.
     async function fetchServer() {
         if (!API_URL) {
@@ -371,6 +436,8 @@
         try {
             const data = await fetchServer();
             const online = Boolean(data.online);
+
+            setServerCard(online ? data : null);
 
             if (online) {
                 setStatus('online', 'Server ist online');

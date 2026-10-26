@@ -77,6 +77,7 @@
         <div class="actions">
             <button type="button" class="btn btn-primary hide-play" data-open-signup>Jetzt anmelden</button>
             <button type="button" class="btn btn-secondary only-soon" id="btn-calendar">Im Kalender speichern</button>
+            <a class="btn btn-secondary" id="discord-link" href="#" target="_blank" rel="noopener" hidden>Discord beitreten</a>
         </div>
     </section>
 
@@ -88,6 +89,12 @@
         <div class="ip-row">
             <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
             <button type="button" class="btn btn-secondary" data-copy-ip disabled>Kopieren</button>
+        </div>
+
+        <!-- Wie in der Minecraft-Serverliste: Icon und MOTD, nur wenn online -->
+        <div class="server-card slot-inset" id="server-card" hidden>
+            <img class="server-icon" id="server-icon" alt="" width="64" height="64" hidden>
+            <p class="motd" id="server-motd"></p>
         </div>
 
         <div class="status" id="status" data-state="loading" aria-live="polite">
