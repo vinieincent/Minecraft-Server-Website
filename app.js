@@ -408,10 +408,18 @@
     let tickTimer;
 
     // Spielmodus: Timer abgelaufen und Server online.
-    // Dann tritt die Anmeldung zurück (siehe site.css, [data-mode="play"]).
+    // Dann tritt die Anmeldung zurück (siehe site.css, [data-mode="play"]),
+    // die IP steht klein unter dem Titel und der IP-Kasten rutscht unter
+    // die Spielerliste.
     function updateMode() {
-        document.body.dataset.mode =
-            isLive() && state.serverOnline ? 'play' : 'default';
+        const play = isLive() && state.serverOnline;
+        const anchor = play ? $('spieler') : $('serverstatus');
+
+        document.body.dataset.mode = play ? 'play' : 'default';
+
+        if (anchor.nextElementSibling !== $('ip')) {
+            anchor.after($('ip'));
+        }
     }
 
     function setStatus(kind, text) {
@@ -533,11 +541,6 @@
             state.serverOnline = online;
             state.onlineList = names;
             state.onlineNames = new Set(names.map(n => n.toLowerCase()));
-
-            $('stat-players').textContent = online
-                ? `${data.onlinePlayers ?? names.length} / ${data.maxPlayers ?? '–'}`
-                : '–';
-            $('stat-version').textContent = online ? (data.version || '–') : '–';
 
             updateMode();
             renderOnline(names);

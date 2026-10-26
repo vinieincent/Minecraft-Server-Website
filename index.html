@@ -53,6 +53,13 @@
     <!-- ===== Start / Countdown ===== -->
     <section class="hero" id="top">
         <h1 data-project>Server</h1>
+
+        <!-- Im Spielmodus: IP klein direkt unter dem Titel -->
+        <div class="hero-ip only-play">
+            <code class="ip slot-inset" data-ip>Noch nicht verfügbar</code>
+            <button type="button" class="btn btn-secondary btn-small" data-copy-ip disabled>Kopieren</button>
+        </div>
+
         <p class="when">
             <time id="start-time"></time>
             <span class="free hide-play">Kostenlos</span>
@@ -66,15 +73,6 @@
                 <div class="slot"><span class="num" id="cd-seconds">00</span><span class="unit">Sekunden</span></div>
             </div>
         </div>
-
-        <div class="only-play">
-            <div class="countdown stats" aria-label="Serverstatus">
-                <div class="slot"><span class="num" id="stat-players">–</span><span class="unit">Spieler online</span></div>
-                <div class="slot"><span class="num" id="stat-version">–</span><span class="unit">Version</span></div>
-            </div>
-        </div>
-
-      
 
         <div class="actions">
             <button type="button" class="btn btn-primary hide-play" data-open-signup>Jetzt anmelden</button>
@@ -95,12 +93,14 @@
 
         <div class="status" id="status" data-state="loading" aria-live="polite">
             <p class="status-line"><span class="dot" aria-hidden="true"></span><span id="status-text">Status wird geladen …</span></p>
-            <dl class="facts hide-play">
-                <div><dt>Version</dt><dd id="fact-version">–</dd></div>
-                <div><dt>Spieler online</dt><dd id="fact-players">–</dd></div>
-            </dl>
             <button type="button" class="link-button" id="btn-refresh">Status aktualisieren</button>
         </div>
+
+        <!-- Version und Spielerzahl als kleine Slots -->
+        <dl class="facts">
+            <div class="slot-inset"><dt>Spieler online</dt><dd id="fact-players">–</dd></div>
+            <div class="slot-inset"><dt>Version</dt><dd id="fact-version">–</dd></div>
+        </dl>
     </section>
 
     <!-- ===== Server-IP ===== -->
