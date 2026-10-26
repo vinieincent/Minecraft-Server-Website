@@ -414,9 +414,22 @@
             isLive() && state.serverOnline ? 'play' : 'default';
     }
 
+    // Kurzform für den Punkt über dem Titel: nur grün (online) oder rot (offline)
+    const HERO_STATUS = {
+        online: ['online', 'Server online'],
+        waiting: ['offline', 'Server offline'],
+        offline: ['offline', 'Server offline'],
+        error: ['error', 'Status unbekannt'],
+        loading: ['loading', 'Status wird geladen …']
+    };
+
     function setStatus(kind, text) {
         $('status').dataset.state = kind;
         $('status-text').textContent = text;
+
+        const [heroKind, heroText] = HERO_STATUS[kind] || HERO_STATUS.loading;
+        $('hero-status').dataset.state = heroKind;
+        $('hero-status-text').textContent = heroText;
     }
 
     // MOTD mit Minecraft-Formatcodes (§a, §l, §r, Hex über §x§r§r§g§g§b§b)
@@ -533,11 +546,6 @@
             state.serverOnline = online;
             state.onlineList = names;
             state.onlineNames = new Set(names.map(n => n.toLowerCase()));
-
-            $('stat-players').textContent = online
-                ? `${data.onlinePlayers ?? names.length} / ${data.maxPlayers ?? '–'}`
-                : '–';
-            $('stat-version').textContent = online ? (data.version || '–') : '–';
 
             updateMode();
             renderOnline(names);
