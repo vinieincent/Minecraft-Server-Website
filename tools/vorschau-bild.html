@@ -15,8 +15,9 @@
 </head>
 <body>
 <!--
-    Erzeugt das Link-Vorschaubild (Discord, WhatsApp …) und die PNG-Icons
-    aus config.js und favicon.svg. Nach einer Änderung von PROJECT_NAME
+    Erzeugt das Link-Vorschaubild (Discord, WhatsApp …), die PNG-Icons und
+    das Minecraft-Server-Icon (server-icon.png, 64×64) aus config.js und
+    favicon.svg. Nach einer Änderung von PROJECT_NAME
     oder START: Seite über den Webserver öffnen, Bilder herunterladen und
     die Dateien im Hauptordner ersetzen. In index.html zusätzlich die
     og:-Tags (Titel, Beschreibung) anpassen.
@@ -74,7 +75,7 @@
         for (let x = 0; x < 1200; x += 32) ctx.fillRect(x, 0, 1, 630);
         for (let y = 0; y < 630; y += 32) ctx.fillRect(0, y, 1200, 1);
 
-        // Block-Icon links, 16 px * 20
+        // Icon links, 32 px * 10
         ctx.imageSmoothingEnabled = false;
         ctx.fillStyle = '#11141f';
         ctx.fillRect(88, 163 + 12, 320, 320);
@@ -125,11 +126,14 @@
         await document.fonts.load('700 34px "Atkinson Hyperlegible"');
         const icon = await loadIcon();
 
-        // apple-touch-icon: 11 px pro Pixel, Rest mit Rahmenfarbe aufgefüllt
+        // Icon hat 32 px: nur ganzzahlige Vielfache, sonst wird es unscharf.
+        // apple-touch-icon: 5 px pro Pixel, Rest mit Rahmenfarbe aufgefüllt.
+        // server-icon.png: Minecraft verlangt genau 64×64.
         return {
             'vorschau.png': og(icon),
-            'apple-touch-icon.png': square(icon, 180, 176),
-            'favicon-32.png': square(icon, 32, 32)
+            'apple-touch-icon.png': square(icon, 180, 160),
+            'favicon-32.png': square(icon, 32, 32),
+            'server-icon.png': square(icon, 64, 64)
         };
     }
 
