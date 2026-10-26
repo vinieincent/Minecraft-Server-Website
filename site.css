@@ -227,17 +227,22 @@ body:not([data-mode="play"]) .only-play,
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 12px;
-    background: var(--panel);
-    border: 2px solid var(--line);
-    border-radius: 999px;
+    padding: 5px 12px;
+    /* Pixel-Look wie ein Minecraft-Button: eckig, heller Rand oben links,
+       dunkler unten rechts, harter Schatten */
+    background: var(--raised);
+    border: 3px solid;
+    border-color: #5a6488 #11141f #11141f #5a6488;
+    border-radius: 0;
+    box-shadow: 0 4px 0 #11141f;
     color: var(--muted);
     font-size: 0.9rem;
     font-weight: 700;
     text-decoration: none;
-    transition: background-color 0.15s, border-color 0.15s;
+    transition: background-color 0.15s;
 }
-.hero-status:hover { background: var(--raised); border-color: #5a6488; color: #fff; }
+.hero-status:hover { background: #3a4263; color: #fff; }
+.hero-status:active { transform: translateY(3px); box-shadow: 0 1px 0 #11141f; }
 .hero-status .dot { width: 10px; height: 10px; }
 .hero-status[data-state="online"] { color: var(--text); }
 .hero-status[data-state="online"] .dot { background: var(--online); box-shadow: 0 0 8px var(--online); }
