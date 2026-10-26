@@ -34,7 +34,7 @@ window.SITE = {
     ADMINS: ['Craftingkatzen',],
 
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
-    MODPACK_URL: '',
+    MODPACK_URL: 'https://modrinth.com/share/6yZ7208m',
 
     // Discord-Einladung (z. B. 'https://discord.gg/abc123').
     // Leer lassen = Discord-Button wird ausgeblendet.
