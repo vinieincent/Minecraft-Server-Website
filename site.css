@@ -221,12 +221,12 @@ body:not([data-mode="play"]) .only-play,
 .hero-ip { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 10px; margin: 18px auto 0; }
 .hero-ip .ip { flex: 0 1 auto; min-height: 40px; padding: 4px 14px; font-size: clamp(1rem, 4vw, 1.25rem); }
 
-/* Kleiner Status-Punkt über dem Titel */
+/* Kleiner Status-Punkt über dem Titel, Link zur Spielerliste */
+.hero-status-wrap { margin: 0 0 14px; }
 .hero-status {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin: 0 0 14px;
     padding: 4px 12px;
     background: var(--panel);
     border: 2px solid var(--line);
@@ -234,7 +234,10 @@ body:not([data-mode="play"]) .only-play,
     color: var(--muted);
     font-size: 0.9rem;
     font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.15s, border-color 0.15s;
 }
+.hero-status:hover { background: var(--raised); border-color: #5a6488; color: #fff; }
 .hero-status .dot { width: 10px; height: 10px; }
 .hero-status[data-state="online"] { color: var(--text); }
 .hero-status[data-state="online"] .dot { background: var(--online); box-shadow: 0 0 8px var(--online); }

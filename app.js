@@ -192,7 +192,10 @@
     $('home-link').href = C.HOME_URL;
     $('projects-link').href = C.PROJECTS_URL;
 
-    document.title = `${C.PROJECT_NAME} – Start am ${dateShort} um ${clock} Uhr`;
+    // Ist der Server online, ersetzt die Spielerzahl den Startzeit-Teil
+    // (siehe setOnlineCount)
+    const BASE_TITLE = `${C.PROJECT_NAME} – Start am ${dateShort} um ${clock} Uhr`;
+    document.title = BASE_TITLE;
     document.querySelector('meta[name="description"]').content =
         `${C.PROJECT_NAME} startet am ${dateYear} um ${clock} Uhr. ` +
         'Kostenlos anmelden und mit der Server-IP beitreten.';
@@ -432,6 +435,18 @@
         $('hero-status-text').textContent = heroText;
     }
 
+    // Spielerzahl im Tab-Titel und am Status-Punkt über dem Titel.
+    // count = null heißt: Server offline, dann wieder der normale Titel.
+    function setOnlineCount(count) {
+        if (count === null) {
+            document.title = BASE_TITLE;
+            return;
+        }
+
+        document.title = `${C.PROJECT_NAME} – ${count} Spieler online`;
+        $('hero-status-text').textContent = `Server online · ${count} Spieler`;
+    }
+
     // MOTD mit Minecraft-Formatcodes (§a, §l, §r, Hex über §x§r§r§g§g§b§b)
     // in Spans mit .mc-*-Klassen umwandeln. §k (verschleiert) wird ignoriert.
     function renderMotd(text) {
@@ -547,12 +562,14 @@
             state.onlineList = names;
             state.onlineNames = new Set(names.map(n => n.toLowerCase()));
 
+            setOnlineCount(online ? (data.onlinePlayers ?? names.length) : null);
             updateMode();
             renderOnline(names);
             renderPlayers();
         } catch (error) {
             console.error('[Status]', error);
             setStatus('error', 'Status gerade nicht abrufbar');
+            setOnlineCount(null);
         }
     }
 

@@ -52,9 +52,12 @@
 
     <!-- ===== Start / Countdown ===== -->
     <section class="hero" id="top">
-        <!-- Kleiner Status über dem Titel: grün = online, rot = offline -->
-        <p class="hero-status" id="hero-status" data-state="loading" aria-hidden="true">
-            <span class="dot"></span><span id="hero-status-text">Status wird geladen …</span>
+        <!-- Kleiner Status über dem Titel: grün = online, rot = offline.
+             Klick springt zur Spielerliste. -->
+        <p class="hero-status-wrap">
+            <a class="hero-status" id="hero-status" href="#spieler" data-state="loading">
+                <span class="dot" aria-hidden="true"></span><span id="hero-status-text">Status wird geladen …</span>
+            </a>
         </p>
 
         <h1 data-project>Server</h1>
