@@ -34,7 +34,7 @@ window.SITE = {
     ADMINS: ['Craftingkatzen',],
 
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
-    MODPACK_URL: '/files/Fitna-Scuffed-3.0.0.mrpack',
+    MODPACK_URL: '/files/Fitna-Scuffed-Public.mrpack',
 
     // Discord-Einladung (z. B. 'https://discord.gg/abc123').
     // Leer lassen = Discord-Button wird ausgeblendet.
