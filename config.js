@@ -134,6 +134,9 @@ window.SITE = {
     //   downloadText: Beschriftung des Buttons (optional, Standard „Herunterladen“)
     //   bild:         Vorschaubild, z. B. 'assets/projekt-1.png' (optional)
     // TODO: Die zwei Einträge unten sind Platzhalter – bitte echte Daten eintragen.
+
+
+   // WICHTIG! https://mega.nz/file/MVoiGZiQ#ZpGLI9TJmpDqU0d4DKrM2fRXDjkMlap0iXk55Z5gluk Ist das Scuffed Attack 2 file auch funktioniert aber nicht bei allen Browsern
     VERGANGENE_PROJEKTE: [
         {
             titel: 'Scuffed Attack 2',
