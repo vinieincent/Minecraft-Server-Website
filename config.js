@@ -155,7 +155,7 @@ window.SITE = {
             titel: 'Scuffed Attack 1',
             zeitraum: 'Winter 2024',
             beschreibung: 'Lade dir jetzt die Scuffed Attack 1 Map herunter.',
-            download: 'https://gfs270n451.userstorage.mega.co.nz/dl/xqOLuoB3Wm9fzgcGf9iwAS0spKHtnh1DI1pAt05xY2gYznvpBrrQGaxqV79yht7_ancg3dM2B0ZxBHbdiOTrjIsZzdHjbZxoozW8vaq56QwNyNBFn75iy0gerAawkfbycGefKtfGUNR3-ZVsyJsB69QZH8TYlg/Scuffed%20Attack%201.zip',
+            download: 'https://transfer.it/t/cIwwRVZAxTLT',
             downloadText: 'Welt herunterladen'
         }
     ]
