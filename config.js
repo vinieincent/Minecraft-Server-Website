@@ -136,8 +136,12 @@ window.SITE = {
     // TODO: Die zwei Einträge unten sind Platzhalter – bitte echte Daten eintragen.
 
 
-   // WICHTIG! https://mega.nz/file/MVoiGZiQ#ZpGLI9TJmpDqU0d4DKrM2fRXDjkMlap0iXk55Z5gluk Ist das Scuffed Attack 2 file auch funktioniert aber nicht bei allen Browsern
-    VERGANGENE_PROJEKTE: [
+   // WICHTIG! Ist das Scuffed Attack 1/2 file auch funktioniert aber nicht bei allen Browsern
+   // Scuffed Attack 2: https://mega.nz/file/MVoiGZiQ#ZpGLI9TJmpDqU0d4DKrM2fRXDjkMlap0iXk55Z5gluk 
+   // Scuffed Attack 1: https://mega.nz/file/NFR0jbLA#GDv9e2eR8KeRJEqjAdSjEturAy82mqMUPy20eMtsZdo und https://drive.usercontent.google.com/download?id=11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39&export=download&authuser=0
+    
+   
+   VERGANGENE_PROJEKTE: [
         {
             titel: 'Scuffed Attack 2',
             zeitraum: 'Winter 2025',
@@ -149,7 +153,7 @@ window.SITE = {
             titel: 'Scuffed Attack 1',
             zeitraum: 'Winter 2024',
             beschreibung: 'Lade dir jetzt die Scuffed Attack 1 Map herunter.',
-            download: 'https://drive.usercontent.google.com/download?id=11FDvL9d7p83rmGUDhzwGLV-Vmwrrmx39&export=download&authuser=0',
+            download: 'https://transfer.it/t/uP0iRMhz3Zza',
             downloadText: 'Welt herunterladen'
         }
     ]
