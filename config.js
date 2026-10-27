@@ -16,7 +16,7 @@ window.SITE = {
 
     // Startzeit. Format: JJJJ-MM-TTTHH:MM:SS+Zeitzone
     // 6. November 2026, 18:00 Uhr deutscher Zeit (nach der Zeitumstellung = +01:00)
-    START: '2026-11-06T18:00:00',
+    START: '2026-11-06T18:30:00',
 
     // Tally-Formular: der Teil nach tally.so/r/ im Anmelde-Link
     TALLY_FORM_ID: 'xVXBWE',
