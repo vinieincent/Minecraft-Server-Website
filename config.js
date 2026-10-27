@@ -138,7 +138,7 @@ window.SITE = {
         {
             titel: 'Scuffed Attack 2',
             zeitraum: 'Winter 2025',
-            beschreibung: 'Hier gibt es bald den Download für Scuffed Attack 2.',
+            beschreibung: 'Hier ist ein Backup vom 3. Dezember 2025 leider ist die Finale Version momentan nicht verfügbar.',
             download: '',
             downloadText: 'Welt herunterladen'
         },
