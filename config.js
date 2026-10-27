@@ -148,7 +148,7 @@ window.SITE = {
             titel: 'Scuffed Attack 2',
             zeitraum: 'Winter 2025',
             beschreibung: 'Hier ist ein Backup vom 3. Dezember 2025 leider ist die Finale Version momentan nicht verfügbar.',
-            download: 'https://gfs270n461.userstorage.mega.co.nz/dl/85mc6qN32-8ctwf0yrCC0XeCb0wIX2b-2dLKMo2MYWwYrYW3x-5iD0iF3zwOE07ay_8PFl60liYnITzkFKAWIaJX8Dh8IkvR5rSSKrI0s8EMPXQM77Uzf6Gu8iEJsxp7d48jT1h1eKobWlgjMPeG-kKDJWLi2g/Scuffed%20Attack%202.zip',
+            download: 'https://transfer.it/t/wMvCFBRmnTYa',
             downloadText: 'Welt herunterladen'
         },
         {
