@@ -33,6 +33,8 @@ window.SITE = {
     // Beispiel: ['VinicentDE', 'Notch']
     ADMINS: ['Craftingkatzen',],
 
+
+
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
     MODPACK_URL: '/files/Server-Modpack-Public.mrpack',
 
