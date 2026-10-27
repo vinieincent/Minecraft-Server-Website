@@ -2,7 +2,7 @@
   <img src="assets/favicon.svg" width="96" height="96" alt="">
 </p>
 
-<h1 align="center">Fitna Scuffed – Event-Website</h1>
+<h1 align="center">Vincent - Minecraft–Server - Website</h1>
 
 <p align="center">
   Startseite für das Minecraft-Event <b>Fitna Scuffed</b>: Countdown, Anmeldung, Server-IP, Serverstatus und Spielerliste.<br>
