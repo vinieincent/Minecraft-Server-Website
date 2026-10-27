@@ -9,7 +9,7 @@ window.SITE = {
     // Achtung: Die Link-Vorschau (og:-Tags in index.html und assets/vorschau.png)
     // kann config.js nicht lesen. Bei Änderung von Name oder START dort
     // anpassen bzw. das Bild mit tools/vorschau-bild.html neu erzeugen.
-    PROJECT_NAME: 'Fitna Scuffed 1',
+    PROJECT_NAME: 'Fitna Scuffed 1 / Scuffed Attack 3',
 
     // ► SERVER-IP HIER EINFÜGEN (optional mit Port, z. B. 'mc.example.de:25566')
     SERVER_IP: 'Bald verfügbar',
@@ -34,7 +34,7 @@ window.SITE = {
     ADMINS: ['Craftingkatzen',],
 
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
-    MODPACK_URL: '/files/Fitna-Scuffed-Public.mrpack',
+    MODPACK_URL: '/files/Server-Modpack-Public-.mrpack',
 
     // Discord-Einladung (z. B. 'https://discord.gg/abc123').
     // Leer lassen = Discord-Button wird ausgeblendet.
