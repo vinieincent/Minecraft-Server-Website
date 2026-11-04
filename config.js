@@ -12,7 +12,7 @@ window.SITE = {
     PROJECT_NAME: 'Scuffed Attack 3',
 
     // ► SERVER-IP HIER EINFÜGEN (optional mit Port, z. B. 'mc.example.de:25566') 
-    SERVER_IP: 'Bald verfügbar',
+    SERVER_IP: 'scuffedattack.de',
 
     // Startzeit. Format: JJJJ-MM-TTTHH:MM:SS+Zeitzone
     // 6. November 2026, 18:00 Uhr deutscher Zeit (nach der Zeitumstellung = +01:00)
