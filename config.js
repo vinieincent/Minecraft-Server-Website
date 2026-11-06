@@ -1,7 +1,7 @@
 /* =====================================================
    HIER STELLST DU ALLES EIN – mehr musst du nicht anfassen.
    Die Server-IP wird automatisch überall verwendet:
-   Anzeige, Kopieren-Button, Status-API, Spielerzahl, Version.
+   Anzeige, Kopieren-Button, Status-API, Spielerzahl, Version.f
    ===================================================== */
 window.SITE = {
 
