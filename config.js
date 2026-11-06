@@ -36,7 +36,7 @@ window.SITE = {
 
 
     // Modpack-Link (.mrpack). Leer lassen = Modpack-Hinweis wird ausgeblendet.
-    MODPACK_URL: '/files/Scuffed Attack 3 1.0.0.mrpack',
+    MODPACK_URL: '/files/Server-Modpack-Public.mrpack',
 
     // Discord-Einladung (z. B. 'https://discord.gg/abc123').
     // Leer lassen = Discord-Button wird ausgeblendet.
