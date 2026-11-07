@@ -31,7 +31,7 @@ window.SITE = {
     // Minecraft-Namen der Admins. Sie stehen immer in der Spielerliste
     // (auch ohne Anmeldung) und bekommen das Label "Admin".
     // Beispiel: ['VinicentDE', 'Notch']
-    ADMINS: ['Craftingkatzen','Benjamln_94',],
+    ADMINS: ['Craftingkatze','Benjamln_94',],
 
 
 
